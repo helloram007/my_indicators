@@ -56,6 +56,12 @@ Status: implemented PROPOSED structure candidate, not approved setup logic. Date
 
 UI 0.5 adds separate 1H evaluation of the strict-pivot/structure algorithm with independent 2/2 research defaults, blue/orange horizontal references, large BOS/CHoCH and alignment summary. Available on 1H/15m only; deliberately suppressed on 4H to avoid incomplete lower-timeframe sampling. No SPA/P2/zone or entry requirements inferred. Eighteen local reference tests pass; exact-revision Pine compilation and chart replay remain pending. Read `ONE_HOUR_STRUCTURE.md` for rules, controls and validation.
 
+## D-010 Independent 15m research structure
+
+Status: implemented PROPOSED structure candidate; entry rules remain OPEN. Date: 29 October 2026. Source: user said “next” after reviewing the readable 4H/1H layout and discussing the separate 15m layer.
+
+UI 0.6 adds the independent common strict-pivot model on 15m, with its own 2/2 research defaults, fuchsia/yellow levels, large BOS/CHoCH and controls. Only requested on 15m charts; no collapsed intrabar sampling on higher charts. Shared snapshot logic and higher-layer outputs are unchanged. Twenty-one local reference tests pass; platform validation remains pending. Read `FIFTEEN_MINUTE_STRUCTURE.md`. Three-direction alignment is descriptive, not an entry signal. No Piprunner optional filter or End-of-P2 setup rule is silently enabled.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner MTF Structure • PROPOSED · UI 0.5", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 0.6", overlay = true, max_labels_count = 300, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -14,6 +14,16 @@ int oneOffset = input.int(14, "1H current label offset (chart bars)", minval = 0
 color oneBull = input.color(color.blue, "1H bullish", group = "1H appearance")
 color oneBear = input.color(color.orange, "1H bearish", group = "1H appearance")
 color oneNeutral = input.color(color.silver, "1H neutral / unknown", group = "1H appearance")
+int fifteenLeft = input.int(2, "15m pivot left bars (research)", minval = 1, maxval = 20, group = "15m structure — changes logic")
+int fifteenRight = input.int(2, "15m pivot right bars (research)", minval = 1, maxval = 20, group = "15m structure — changes logic")
+bool show15m = input.bool(true, "Show 15m structure on 15m charts", group = "15m learning — visuals only")
+bool fifteenLevels = input.bool(true, "Current 15m high and low", group = "15m learning — visuals only")
+bool fifteenBreaks = input.bool(true, "15m research BOS / CHoCH", group = "15m learning — visuals only")
+int fifteenHistory = input.int(2, "15m historical break lines", minval = 0, maxval = 20, group = "15m learning — visuals only")
+int fifteenOffset = input.int(22, "15m current label offset (chart bars)", minval = 0, maxval = 50, group = "15m learning — visuals only")
+color fifteenBull = input.color(color.fuchsia, "15m bullish (violet family)", group = "15m appearance")
+color fifteenBear = input.color(color.yellow, "15m bearish", group = "15m appearance")
+color fifteenNeutral = input.color(color.gray, "15m neutral / unknown", group = "15m appearance")
 string mode = input.string("Training", "Annotation mode", options = ["Training", "Guided", "Minimal", "Off"], group = "Learning — visuals only")
 string drawingStyle = input.string("Horizontal lines", "Structure drawing style", options = ["Horizontal lines", "Legacy labels"], group = "Learning — visuals only")
 bool showLevels = input.bool(true, "Current 4H high and low levels", group = "Horizontal structure — visuals only")
@@ -298,49 +308,104 @@ plot(oneConfirmed, "Audit 1H confirmation epoch ms", display = display.data_wind
 plot(oneHigh, "Audit 1H latest high", display = display.data_window)
 plot(oneLow, "Audit 1H latest low", display = display.data_window)
 
+// Independent 15m research layer: available only on the 15m chart.
+bool supports15m = timeframe.in_seconds() == 900
+int fifteenBias = na
+float fifteenProtection = na
+int fifteenConfirmed = na
+float fifteenHigh = na
+float fifteenLow = na
+var array<line> fifteenLines = array.new<line>()
+var array<label> fifteenLabels = array.new<label>()
+var line fifteenHighLine = na
+var line fifteenLowLine = na
+var label fifteenHighLabel = na
+var label fifteenLowLabel = na
+if supports15m
+    [s, p, hPrev1, hLast1, lPrev1, lLast1, hTime1, lTime1, v, reason1, hp1, lp1, origin1, hc1, lc1, broken1, dual1, at1, close1, hi1, lo1, code1, level1, reference1, usedH1, usedL1] = request.security(syminfo.tickerid, "15", f_snapshot(fifteenLeft, fifteenRight), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
+    fifteenBias := s
+    fifteenProtection := p
+    fifteenConfirmed := at1
+    fifteenHigh := hLast1
+    fifteenLow := lLast1
+    bool fifteenVisible = mode != "Off" and show15m
+    bool fifteenNew = not na(at1) and (na(at1[1]) or at1 != at1[1])
+    if fifteenVisible and expanded and fifteenBreaks and fifteenHistory > 0 and fifteenNew and code1 != 0
+        color c = code1 > 0 ? fifteenBull : fifteenBear
+        string title = "15m " + (math.abs(code1) == 1 ? "BOS" : math.abs(code1) == 2 ? "CHoCH" : "Break") + (code1 > 0 ? " ↑" : " ↓")
+        array.push(fifteenLines, line.new(reference1, level1, at1, level1, xloc = xloc.bar_time, color = c, style = line.style_dashed, width = levelWidth))
+        array.push(fifteenLabels, label.new(at1, level1, title, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = breakTextSize, tooltip = "PROPOSED 15m structure only; Not the qualified End-of-P2 entry sequence\nLevel " + f_price(level1) + "\nConfirmed UTC " + f_time(at1) + "\nPublished UTC " + f_time(time)))
+        while array.size(fifteenLines) > fifteenHistory
+            line.delete(array.shift(fifteenLines))
+            label.delete(array.shift(fifteenLabels))
+    if barstate.islast
+        line.delete(fifteenHighLine)
+        line.delete(fifteenLowLine)
+        label.delete(fifteenHighLabel)
+        label.delete(fifteenLowLabel)
+        int end1 = time + int(timeframe.in_seconds() * 1000) * fifteenOffset
+        if fifteenVisible and fifteenLevels and not na(hLast1)
+            string name = na(hPrev1) ? "H" : hLast1 > hPrev1 ? "HH" : hLast1 < hPrev1 ? "LH" : "EH"
+            color c = name == "HH" ? fifteenBull : name == "LH" ? fifteenBear : fifteenNeutral
+            fifteenHighLine := line.new(hTime1, hLast1, end1, hLast1, xloc = xloc.bar_time, color = c, style = usedH1 ? line.style_dotted : line.style_solid, width = 1)
+            fifteenHighLabel := label.new(end1, hLast1, "15m " + name + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m confirmed swing; entry sequence still UNDEFINED\nOrigin UTC " + f_time(hTime1))
+        if fifteenVisible and fifteenLevels and not na(lLast1)
+            string name = na(lPrev1) ? "L" : lLast1 > lPrev1 ? "HL" : lLast1 < lPrev1 ? "LL" : "EL"
+            color c = name == "HL" ? fifteenBull : name == "LL" ? fifteenBear : fifteenNeutral
+            fifteenLowLine := line.new(lTime1, lLast1, end1, lLast1, xloc = xloc.bar_time, color = c, style = usedL1 ? line.style_dotted : line.style_solid, width = 1)
+            fifteenLowLabel := label.new(end1, lLast1, "15m " + name + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m confirmed swing; entry sequence still UNDEFINED\nOrigin UTC " + f_time(lTime1))
+
+plot(fifteenBias, "Audit 15m structure state", display = display.data_window)
+plot(fifteenProtection, "Audit 15m structural protection", display = display.data_window)
+plot(fifteenConfirmed, "Audit 15m confirmation epoch ms", display = display.data_window)
+plot(fifteenHigh, "Audit 15m latest high", display = display.data_window)
+plot(fifteenLow, "Audit 15m latest low", display = display.data_window)
+
 string corner = panelCorner == "Top left" ? position.top_left : panelCorner == "Bottom left" ? position.bottom_left : panelCorner == "Bottom right" ? position.bottom_right : position.top_right
-var table panel = table.new(corner, 2, 22, border_width = 1)
+var table panel = table.new(corner, 2, 23, border_width = 1)
 f_row(int row, string title, string value, color c) =>
     table.cell(panel, 0, row, title, text_color = color.white, bgcolor = color.new(color.black, panelTransparency), text_size = textSize, text_halign = text.align_left)
     table.cell(panel, 1, row, value, text_color = color.white, bgcolor = color.new(c, panelTransparency), text_size = textSize, text_halign = text.align_left)
 if barstate.islast
-    table.clear(panel, 0, 0, 1, 21)
+    table.clear(panel, 0, 0, 1, 22)
     if mode != "Off" and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.5", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.6", f_state(bias), biasColor)
         string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
         f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
+        bool threeAligned = (bias == 1 or bias == -1) and oneBias == bias and fifteenBias == bias
+        f_row(2, "15m research · entry NOT qualified", supports15m ? f_state(fifteenBias) + (threeAligned ? " · 3TF aligned, no entry" : " · entry rules pending") : "View 15m · hidden here", fifteenBias == 1 ? fifteenBull : fifteenBias == -1 ? fifteenBear : fifteenNeutral)
         if expanded and panelLayout == "Full"
-            f_row(2, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
-            f_row(3, "AN01 Confirmed 4H close UTC", f_time(confirmedAt), neutralColor)
-            f_row(4, "AN02 High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
-            f_row(5, "AN02 Low pair", f_price(l0) + " → " + f_price(l1), neutralColor)
-            f_row(6, "AN03 Reason", why, biasColor)
-            f_row(7, "AN04 Protection", f_price(protectedPrice), biasColor)
-            f_row(8, "AN02 Latest origins UTC", "H " + f_time(ht) + "\nL " + f_time(lt), neutralColor)
-            f_row(9, "History", str.tostring(array.size(labels)) + " labels; " + str.tostring(pruned) + " pruned", neutralColor)
+            f_row(3, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
+            f_row(4, "AN01 Confirmed 4H close UTC", f_time(confirmedAt), neutralColor)
+            f_row(5, "AN02 High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
+            f_row(6, "AN02 Low pair", f_price(l0) + " → " + f_price(l1), neutralColor)
+            f_row(7, "AN03 Reason", why, biasColor)
+            f_row(8, "AN04 Protection", f_price(protectedPrice), biasColor)
+            f_row(9, "AN02 Latest origins UTC", "H " + f_time(ht) + "\nL " + f_time(lt), neutralColor)
+            f_row(10, "History", str.tostring(array.size(labels)) + " labels; " + str.tostring(pruned) + " pruned", neutralColor)
         if expanded and panelLayout == "Compact"
-            f_row(2, "4H confirmed UTC", f_time(confirmedAt), neutralColor)
-            f_row(3, "High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
-            f_row(4, "Low pair", f_price(l0) + " → " + f_price(l1), neutralColor)
-            f_row(5, "Protection", f_price(protectedPrice), biasColor)
-            f_row(6, "Reason", why, biasColor)
-            f_row(7, "Later modules", "UNDEFINED / not built · no orders", neutralColor)
+            f_row(3, "4H confirmed UTC", f_time(confirmedAt), neutralColor)
+            f_row(4, "High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
+            f_row(5, "Low pair", f_price(l0) + " → " + f_price(l1), neutralColor)
+            f_row(6, "Protection", f_price(protectedPrice), biasColor)
+            f_row(7, "Reason", why, biasColor)
+            f_row(8, "Later modules", "UNDEFINED / not built · no orders", neutralColor)
         if training and showFutureRows
-            f_row(10, "AN05–06 4H zones / SPA", "UNDEFINED / not implemented", neutralColor)
-            f_row(11, "AN07 1H P2 setup", "Structure only · SPA/P2 UNDEFINED", neutralColor)
-            f_row(12, "AN08 15m CHoCH", "WAITING for approved setup module", neutralColor)
-            f_row(13, "AN09 Swing break", "WAITING for CHoCH module", neutralColor)
-            f_row(14, "AN10 Retest", "WAITING for swing break module", neutralColor)
-            f_row(15, "AN11–12 Signal / entry / expiry", "WAITING / no orders", neutralColor)
-            f_row(16, "AN13–15 Risk / TP1 / runner", "UNDEFINED / not implemented", neutralColor)
-            f_row(17, "AN16 EMA36/100", "DISABLED OPTIONAL / not built", neutralColor)
-            f_row(18, "AN17 Williams Fractals 15m", "DISABLED OPTIONAL / not built", neutralColor)
-            f_row(19, "AN18 Lifecycle", "4H events only; no entry signals", neutralColor)
+            f_row(11, "AN05–06 4H zones / SPA", "UNDEFINED / not implemented", neutralColor)
+            f_row(12, "AN07 1H P2 setup", "Structure only · SPA/P2 UNDEFINED", neutralColor)
+            f_row(13, "AN08 15m CHoCH", "Research labels only · setup UNDEFINED", neutralColor)
+            f_row(14, "AN09 Swing break", "WAITING for qualified CHoCH sequence", neutralColor)
+            f_row(15, "AN10 Retest", "WAITING for swing break module", neutralColor)
+            f_row(16, "AN11–12 Signal / entry / expiry", "WAITING / no orders", neutralColor)
+            f_row(17, "AN13–15 Risk / TP1 / runner", "UNDEFINED / not implemented", neutralColor)
+            f_row(18, "AN16 EMA36/100", "DISABLED OPTIONAL / not built", neutralColor)
+            f_row(19, "AN17 Williams Fractals 15m", "DISABLED OPTIONAL / not built", neutralColor)
+            f_row(20, "AN18 Lifecycle", "Structure events only; no entry signals", neutralColor)
         if showDeveloping
             // Current chart price is explanatory only, never input to f_snapshot().
             bool beyond = (bias == -1 and close > protectedPrice) or (bias == 1 and close < protectedPrice)
             string liveText = beyond ? "Price beyond level; WAIT for 4H close" : "Only a closed 4H break invalidates bias"
-            int statusRow = training and showFutureRows ? 20 : expanded ? (panelLayout == "Full" ? 10 : 8) : 2
+            int statusRow = training and showFutureRows ? 21 : expanded ? (panelLayout == "Full" ? 11 : 9) : 3
             f_row(statusRow, "4H rule · live price info", liveText, neutralColor)
             if expanded
                 f_row(statusRow + 1, "Scheduled 4H close UTC", f_time(time_close("240")), neutralColor)

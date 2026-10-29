@@ -19,9 +19,9 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 
 ## Current implementation status
 
-Latest source is **UI 0.5**, title Piprunner MTF Structure. 4H calculation is unchanged after parameterizing the common engine; independent proposed 1H structure now runs on 1H/15m with its own strengths, blue/orange levels, large BOS/CHoCH and alignment panel. 1H structure is deliberately unavailable on 4H to avoid missing lower-timeframe events. Visibility does not control requests on supported intervals. See `ONE_HOUR_STRUCTURE.md` for controls, limitations and next checks. This does NOT implement 1H P2/SPA or 15m entry qualification.
+Latest source is **UI 0.6**, title Piprunner MTF Structure. Independent proposed 4H/1H/15m strict-pivot research structure layers are implemented. Colors: 4H teal/red, 1H blue/orange, 15m fuchsia/yellow; all configurable. Large BOS/CHoCH, horizontal current levels, bounded history and independent visibility remain. 1H is available on 1H/15m only; 15m on 15m only, avoiding collapsed lower-timeframe sampling. Full details: FIFTEEN_MINUTE_STRUCTURE.md and ONE_HOUR_STRUCTURE.md. These are not qualified End-of-P2 setup/entry predicates.
 
-Source remains `src/piprunner_4h_bias.pine` for continuity. Run `python -m unittest discover -s piprunner/tests -v`: 18 independent reference tests pass. Source comparison confirms parameter-normalized snapshot equivalence and unchanged six 4H audit plots. These do not execute Pine. Earlier revisions visibly ran on user charts; UI 0.5 compilation, independent-context runtime, chart visual inspection and replay remain pending. No orders or empirical backtests are implemented. Existing strategy scripts have not been supplied.
+Source stays `src/piprunner_4h_bias.pine`. Run `python -m unittest discover -s piprunner/tests -v`: 21 reference tests pass. Source comparison confirms shared snapshot, existing 4H/1H request/render blocks and 11 audit outputs unchanged. These checks do not execute Pine. UI 0.5 is visible in the latest user screenshot and user reports a clear view; record partial runtime/presentation acceptance only. UI 0.6 compilation and three-layer replay/visual checks remain pending. No orders, retest, signal-candle entry, P2/SPA qualification or empirical backtests exist. Existing strategy scripts have not been supplied.
 
 Presentation preferences are in ANNOTATION_STYLE: horizontal lines, distinct timeframe colors, Large BOS/CHoCH text by default. UI_02/UI_03 preserve earlier presentation history; DECISIONS records rule ownership.
 
@@ -29,7 +29,7 @@ The Word copy could not be visually rendered because the renderer was unavailabl
 
 ## First implementation to build
 
-The Pine v6 source and reference fixtures have now been written. Next: load UI 0.5 on 1H/15m, check both colors and request independence, compare matching hourly snapshots and complete outstanding replay/annotation checks. Then develop the separate 15m research layer or obtain definitions needed for actual P2/SPA qualification. Keep candidate B4H v0 explicitly labelled PROPOSED. Do not enable orders or claim the user has approved its structural behavior.
+The Pine v6 source and reference fixtures have now been written. Next: load UI 0.6 on 15m, check all three layers, label sizing and audit parity, then complete outstanding replay checks. After chart review obtain precise location/P2/SPA and 15m entry definitions before implementing qualification; do not invent them from research alignment. Keep candidate B4H v0 explicitly labelled PROPOSED. Do not enable orders or claim the user has approved its structural behavior.
 
 Candidate summary: strict confirmed L/R pivots (proposed default 2/2), independent high/low lists, two highs and two lows for classification, HH+HL bullish and LH+LL bearish, mixed structure neutral, insufficient data unknown. Close-based protected-level invalidation wins over same-update pivot classification; rearming needs fresh evidence. Verify full details in the requirements before coding.
 

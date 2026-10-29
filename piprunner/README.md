@@ -14,6 +14,7 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 - [Current UI 0.3 horizontal structure display](docs/UI_03.md)
 - [UI 0.4 event text and future timeframe color conventions](docs/ANNOTATION_STYLE.md)
 - [Current UI 0.5 independent 1H structure](docs/ONE_HOUR_STRUCTURE.md)
+- [Current UI 0.6 independent 15m structure](docs/FIFTEEN_MINUTE_STRUCTURE.md)
 
 Architecture: **4H bias → 1H setup → 15m structure and execution**.
 
@@ -23,7 +24,7 @@ EMA 36/100 and 15m Williams Fractals are independent optional experiments. Chart
 
 ## Current status
 
-UI 0.5 provides proposed 4H bias and independent 1H structure in `src/piprunner_4h_bias.pine`. One-hour structure appears on 1H/15m with blue/orange levels; 4H keeps teal/red. Both use large configurable BOS/CHoCH. Eighteen reference tests pass. Updated Pine compilation/replay remains pending. No P2/SPA setup, 15m structure, entries or orders are implemented. The Word design has not passed visual rendering verification.
+UI 0.6 provides proposed 4H/1H/15m research structure in `src/piprunner_4h_bias.pine`. All three layers appear on 15m; 1H displays 4H/1H and 4H displays its own layer. Configurable colors distinguish timeframe and direction; BOS/CHoCH defaults Large. Twenty-one local reference tests pass; revised Pine compilation/replay remains pending. No P2/SPA setup qualification, retest, signal-candle entry or orders are implemented. The Word design has not passed visual rendering verification.
 
 The confirmed platform is **TradingView**. New chart scripts will use **Pine Script v6**. The first implementation is the proposed non-repainting 4H Bias indicator with configurable learning annotations and causal tests. Proposed structural rules remain subject to chart review and approval.
 
