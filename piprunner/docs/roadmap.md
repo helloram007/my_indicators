@@ -19,6 +19,10 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] Implement UI 0.3 horizontal levels, updating current labels, bounded proposed 4H BOS/CHoCH history and Summary panel.
 - [x] Pass 15 local reference tests (bias and educational break overlay); platform checks remain separate.
 - [ ] Validate UI 0.3 compilation, line readability, publication timing and numeric audit parity in TradingView.
+- [x] User reports UI 0.3 gives a clear view; this is partial presentation acceptance, not model/replay approval.
+- [x] UI 0.4: independent larger BOS/CHoCH text control and durable future timeframe-color requirements.
+- [ ] Check UI 0.4 larger-text readability in TradingView.
+- [ ] Apply distinct configurable 1H/15m color families and larger BOS/CHoCH text when those layers are implemented.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.
 - [ ] Define and implement 4H location and 1H P2/SPA qualification.

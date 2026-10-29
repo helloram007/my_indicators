@@ -44,6 +44,12 @@ Status: requested presentation implemented; BOS/CHoCH classification PROPOSED pe
 
 Default Horizontal lines replaces bubble history with two current 4H references, right-edge labels, three retained break segments and Summary panel. Detailed semantics and controls are in `UI_03.md`. 4H close crossing a confirmed reference is BOS with prior directional bias, CHoCH against it, otherwise unclassified Break; consume each pivot once. No 1H/15m engine or order conditions added. Existing bias calculations unchanged. Fifteen independent local tests pass; Pine compilation of this revision remains pending.
 
+## D-008 Event text and timeframe colors
+
+Status: CONFIRMED user presentation requirements; exact future colors PROPOSED. Date: 29 October 2026. Source: user says UI 0.3 gives a clear view, requests distinct colors for future 1H/15m structure and larger BOS/CHoCH text everywhere.
+
+UI 0.4 adds event-text size Normal/Large/Huge, default Large; panel/swing size remains independent. Future timeframe layers must use distinct configurable colors and explicit timeframe prefixes. Proposed palette and validation details are in `ANNOTATION_STYLE.md`. No trading rule approval or 1H/15m implementation is inferred.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

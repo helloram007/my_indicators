@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.3", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
+indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.4", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -8,6 +8,7 @@ string mode = input.string("Training", "Annotation mode", options = ["Training",
 string drawingStyle = input.string("Horizontal lines", "Structure drawing style", options = ["Horizontal lines", "Legacy labels"], group = "Learning — visuals only")
 bool showLevels = input.bool(true, "Current 4H high and low levels", group = "Horizontal structure — visuals only")
 bool showBreaks = input.bool(true, "Confirmed 4H BOS / CHoCH (proposed)", group = "Horizontal structure — visuals only")
+string breakTextScale = input.string("Large", "BOS / CHoCH text size", options = ["Normal", "Large", "Huge"], group = "Horizontal structure — visuals only")
 int retainedBreaks = input.int(3, "Historical break lines (0 = current levels only)", minval = 0, maxval = 20, group = "Horizontal structure — visuals only")
 int levelLabelOffset = input.int(6, "Current label offset (chart bars)", minval = 0, maxval = 30, group = "Horizontal structure — visuals only")
 int levelWidth = input.int(1, "Level line width", minval = 1, maxval = 3, group = "Horizontal structure — visuals only")
@@ -153,6 +154,7 @@ bool newSnapshot = not na(confirmedAt) and (na(confirmedAt[1]) or confirmedAt !=
 bool changed = not na(bias) and (na(bias[1]) or bias != bias[1])
 color biasColor = bias == 1 ? bullColor : bias == -1 ? bearColor : neutralColor
 string textSize = labelScale == "Large" ? size.large : labelScale == "Normal" ? size.normal : size.small
+string breakTextSize = breakTextScale == "Huge" ? size.huge : breakTextScale == "Normal" ? size.normal : size.large
 var array<label> labels = array.new<label>()
 var int pruned = 0
 var int labelLane = 0
@@ -194,7 +196,7 @@ if horizontal and expanded and newSnapshot and showBreaks and retainedBreaks > 0
     string eventName = math.abs(breakCode) == 1 ? "BOS" : math.abs(breakCode) == 2 ? "CHoCH" : "Break"
     string eventText = "4H " + eventName + (breakCode > 0 ? " ↑" : " ↓")
     array.push(breakLines, line.new(breakOrigin, breakLevel, confirmedAt, breakLevel, xloc = xloc.bar_time, color = eventColor, style = line.style_dashed, width = levelWidth))
-    array.push(breakLabels, label.new(confirmedAt, breakLevel, eventText, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = eventColor, size = textSize, tooltip = "PROPOSED 4H display classification\nLevel " + f_price(breakLevel) + "\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished UTC " + f_time(time) + "\nNot a 15m entry CHoCH"))
+    array.push(breakLabels, label.new(confirmedAt, breakLevel, eventText, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = eventColor, size = breakTextSize, tooltip = "PROPOSED 4H display classification\nLevel " + f_price(breakLevel) + "\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished UTC " + f_time(time) + "\nNot a 15m entry CHoCH"))
     while array.size(breakLines) > retainedBreaks
         line.delete(array.shift(breakLines))
         label.delete(array.shift(breakLabels))
@@ -240,7 +242,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 21)
     if visible and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.3", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.4", f_state(bias), biasColor)
         f_row(1, "Next step", bias == 1 or bias == -1 ? "1H setup UNDEFINED / not built" : "Wait for confirmed 4H structure", neutralColor)
         if expanded and panelLayout == "Full"
             f_row(2, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
