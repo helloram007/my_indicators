@@ -40,6 +40,7 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] Supersede unbuffered far-edge threshold: wick invalidation beyond base low/high extended by 30% of base range; see D-016. Historical decision, superseded by D-017.
 - [x] Correct S/D invalidation to finalized close beyond the buffered level; wick-only breaches do not invalidate (D-017).
 - [x] Confirm invalidation uses the zone's own timeframe close, independent of viewing chart interval (D-018).
+- [x] Confirm HTF priority: 4H controls direction; 1H/15m cannot override it (D-019).
 - [x] Review user course and draft `LOCATION_SPA_SPEC.md` with confirmed intent, proposed mechanics and implementation tests.
 - [ ] Finalize zone detector, pattern strength/contact and remaining S/R/short-pattern decisions before setup qualification.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.

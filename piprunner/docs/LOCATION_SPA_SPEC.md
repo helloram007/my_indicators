@@ -10,6 +10,7 @@ Status: confirmed strategy intent plus proposed mechanical details. 29 October 2
 - **Any one** of pin-bar rejection, strong engulfing or piercing qualifies the SPA-pattern branch, in the 4H direction.
 - A supply/demand zone becomes invalid on **a candle close strictly beyond its buffered invalidation level**, using a 30% base-range extension beyond the base low for demand or base high for supply. This supersedes both invalidation at the unbuffered far edge and the earlier wick-only rule. Wick penetration alone does not invalidate. The invalidation candle must belong to the zone's own timeframe, confirmed by the user. This does not change the distinct close-confirmed structural bias rule.
 - User supplied PriceActionNinja's guide as the supply/demand methodology reference.
+- **HTF always has priority:** 4H determines permitted direction, 1H qualifies context/setup and 15m confirms execution. Lower-timeframe structure or SPA cannot override the active confirmed 4H directional gate.
 
 The existing 15m entry sequence, stop, expiry and management invariants remain unchanged. A qualified 1H SPA observation is not an immediate market entry and cannot bypass the 15m sequence.
 
@@ -23,7 +24,9 @@ The guide places demand around the base preceding an upward departure and an ass
 
 Confirmed intent: directional 4H context AND a retracement to an eligible location AND at least one approved directional SPA pattern on completed 1H evidence. Proposed execution details below are not promoted to confirmed rules merely because the user supplied the guide.
 
-For longs use support/demand and bullish SPA with bullish 4H bias; for shorts use resistance/supply and bearish SPA with bearish 4H bias. Neutral/unknown bias blocks qualification. The directional side mapping and the exact requirement that 4H bias still agrees at the 1H close are proposed mechanical details consistent with the intent, requiring chart review.
+CONFIRMED hierarchy: longs require bullish confirmed 4H bias; shorts require bearish confirmed 4H bias. A lower-timeframe bullish CHoCH during bearish 4H context describes a possible pullback/reversal attempt, not permission to buy. The converse applies during bullish 4H context. Neutral/unknown 4H blocks a new directional setup; lower timeframes cannot supply the missing authority. Proposed location mapping: support/demand for longs and resistance/supply for shorts. Recheck the available confirmed 4H context at setup qualification and before any new entry authorization; use its publication timestamp, never later evidence.
+
+Priority does not change independent zone validity. A lower-timeframe zone may invalidate on its own close while a 4H zone remains valid. A valid 4H zone cannot resurrect an invalidated 1H/15m zone or satisfy a missing SPA/entry predicate. Display counter-HTF evidence for learning with an explicit blocked/countertrend status. Priority is not permission to close an existing trade or change its stop; post-fill bias-change management remains a separate unresolved rule.
 
 1H directional structure need not itself be bullish/bearish unless separately approved. Do not silently require three-timeframe alignment: the SPA can precede a full 1H structural reversal. Existing research structure classification is context, not an additional approved gate.
 

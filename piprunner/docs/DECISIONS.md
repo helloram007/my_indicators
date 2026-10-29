@@ -110,6 +110,12 @@ Status: CONFIRMED explicit user clarification. Date: 29 October 2026.
 
 Each S/D zone is invalidated by a finalized candle close on its OWN timeframe beyond its buffered level: 4H zone by 4H close, 1H by 1H, 15m by 15m. Viewing a 4H zone on a 15m chart does not let 15m closes invalidate it. Retain the 30% base-range buffer, strict inequality and no wick-only invalidation. Resolves D-017's timeframe question. Each zone lifecycle is independent. No zone code yet; Pine remains UI 0.9.
 
+## D-019 Higher timeframe priority
+
+Status: CONFIRMED user instruction. Date: 29 October 2026. Source: “HTF always holds the priority”.
+
+Hierarchy is 4H directional authority -> 1H setup qualification -> 15m execution confirmation. Lower-timeframe signals cannot authorize a counter-4H trade; neutral/unknown 4H cannot be replaced by a lower-timeframe direction. Continue to evaluate each zone's validity on its own timeframe close with the approved buffer (D-018). Do not infer automatic exits, stop changes or resurrection of invalidated zones from HTF priority. No trading-code change in this documentation update.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

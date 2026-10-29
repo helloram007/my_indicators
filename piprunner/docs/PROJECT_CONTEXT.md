@@ -11,6 +11,7 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 - Platform: TradingView, explicitly confirmed by the user on 29 October 2026.
 - Repository: `https://github.com/helloram007/my_indicators`; project directory: `piprunner/`.
 - Architecture: 4H bias, 1H setup, 15m structure and entry.
+- HTF always has priority: 4H authorizes direction, 1H qualifies setup, 15m confirms execution. Lower-timeframe signals cannot override confirmed 4H direction. Neutral/unknown 4H blocks new directional qualification. Zone-own-timeframe invalidation remains independent (D-018/D-019); post-fill bias-change management is not defined by this priority rule.
 - Preserve 15m CHoCH → separate swing break → retest → signal candle → entry one tick beyond the signal candle.
 - Preserve three-bar expiry, stop beyond retest extreme, minimum 2R opportunity, 50% TP1 and runner. Exact unresolved interpretations remain OPEN.
 - EMA36/100 and Williams Fractals are optional; hiding annotations never changes decisions.
