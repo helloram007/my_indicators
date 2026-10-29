@@ -98,6 +98,12 @@ Status: CONFIRMED user buffer requirement; full-range measurement is the disclos
 
 Supersedes D-015's unbuffered far-edge threshold, retaining wick-based detection. Let R=baseHigh-baseLow; demand level=baseLow-0.30*R, supply level=baseHigh+0.30*R. Proposed configurable percentage defaults to 30%; tick rounding is outward. Base-group selection remains open; use full high-low rather than body or instrument-price percentage as stated to the user. Do not expand the contact zone or change retest-based stops. Specification/tests updated; zone/SPA indicator code remains unimplemented and Pine stays UI 0.9.
 
+## D-017 Close-based zone invalidation correction
+
+Status: CONFIRMED user correction; invalidation timeframe OPEN. Date: 29 October 2026.
+
+User corrected invalidation to require a candle close below/above the base rather than a wick. Retain D-016's 30% base-range buffer as the current interpretation; demand requires close below baseLow-0.30*range, supply close above baseHigh+0.30*range. Wick-only penetration and equality do not invalidate. This supersedes wick-based parts of D-015/D-016. Which candle timeframe supplies that close is not explicit; zone-timeframe close is recommended but not approved. No zone implementation exists yet; Pine remains UI 0.9.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
