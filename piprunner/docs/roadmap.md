@@ -12,6 +12,8 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] Add initial 4H learning annotations, checklist shell and Training/Guided/Minimal/Off controls; visual acceptance pending.
 - [x] Pass 10 independent local reference tests; see `4H_BIAS.md` for coverage and limitations.
 - [ ] Compile the Pine source and validate replay/visual behavior in TradingView.
+- [x] Review user snapshot on 4H/1H/15m: matching current state and partial visual evidence; see `CHART_REVIEW_001.md`.
+- [ ] Improve panel/label readability and explain developing-candle versus confirmed bias clearly.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.
 - [ ] Define and implement 4H location and 1H P2/SPA qualification.

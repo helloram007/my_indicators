@@ -35,6 +35,8 @@ Known implementation limits: chart support restricted to standard 15m/1H/4H; nat
 
 ## Still open
 
+User chart review 001 is recorded in `CHART_REVIEW_001.md` (snapshot https://www.tradingview.com/x/JPaT4zMi/). Indicator output is visible on 4H/1H/15m, with matching current bearish state, evidence pairs, 13:00 UTC confirmation and 1.33386 protection. Treat this as user-provided execution/partial visual evidence, not independent exact-revision compilation or replay validation. Current 4H is open above protection; waiting for its close is consistent with the rule. Readability issues: checklist covers candles, confirmation labels overlap, pivot-side colors can confuse trend interpretation. Next practical work is presentation improvements followed by closed-bar/replay checks; do not change model rules based on one image.
+
 Approval of the 4H candidate and feed/session boundaries; SPA/P2/zone/FVG definitions and mandatory status; precise 15m structure, retest and candle predicates; expiry inclusivity; stop buffer; meaning of minimum 2R; target and runner policy; sizing, costs and test datasets. Read the complete decision register D01–D11 in requirements.
 
 ## Continuation routine
