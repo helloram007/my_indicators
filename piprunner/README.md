@@ -4,6 +4,8 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 
 ## Design
 
+- [Start here for project context](docs/PROJECT_CONTEXT.md)
+- [Confirmed decisions and proposals](docs/DECISIONS.md)
 - [Requirements and design](docs/requirements.md)
 - [Editable Word document](docs/requirements.docx)
 - [Feature checklist](docs/roadmap.md)
@@ -18,6 +20,6 @@ EMA 36/100 and 15m Williams Fractals are independent optional experiments. Chart
 
 Documentation foundation only. No executable indicator or trading strategy has been implemented or validated. The Word document has not passed visual rendering verification; Markdown is the reviewable text version.
 
-The first implementation is the proposed non-repainting 4H Bias indicator with configurable learning annotations and causal tests. Confirm the target platform before adding platform-specific source code. Proposed structural rules remain subject to chart review and approval.
+The confirmed platform is **TradingView**. New chart scripts will use **Pine Script v6**. The first implementation is the proposed non-repainting 4H Bias indicator with configurable learning annotations and causal tests. Proposed structural rules remain subject to chart review and approval.
 
 Future source and tests will live in `src/` and `tests/` when implemented. Each feature should include its rule references, tests, annotation behavior and remaining limitations.

@@ -5,7 +5,9 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] Create the `piprunner` project directory.
 - [x] Record requirements, confirmed invariants and open decisions.
 - [x] Specify configurable learning annotations AN01–AN18.
-- [ ] Confirm platform and obtain any existing strategy scripts.
+- [x] Confirm platform: TradingView; use Pine Script v6 for new scripts.
+- [x] Add durable AI instructions, project handover and decision log.
+- [ ] Obtain any existing strategy scripts, if available; none supplied yet.
 - [ ] Implement proposed 4H Bias with confirmed pivots, structural classification and protected levels.
 - [ ] Add 4H learning annotations, checklist shell and Training/Guided/Minimal/Off controls.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.

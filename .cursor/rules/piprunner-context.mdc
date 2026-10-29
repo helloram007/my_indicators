@@ -1,0 +1,10 @@
+---
+description: Read and maintain Piprunner project context before changing its strategy
+globs: "piprunner/**"
+alwaysApply: false
+---
+
+Read `piprunner/AGENTS.md`, `piprunner/docs/PROJECT_CONTEXT.md`, `piprunner/docs/DECISIONS.md`, the roadmap and relevant requirements before editing.
+Target TradingView Pine Script v6. Start with the proposed 4H Bias indicator and learning annotations, without orders.
+Preserve confirmed End-of-P2 rules; keep optional EMA/fractal experiments separate. Visibility settings must not change decisions.
+Maintain the handover and record actual verification after meaningful changes. Never claim TradingView compilation or replay from reference tests alone.
