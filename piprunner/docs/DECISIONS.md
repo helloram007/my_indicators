@@ -26,6 +26,12 @@ Status: PROPOSED. Candidate: B4H v0, requirements Sections 3–5.
 
 Build as a labelled research indicator with annotations and causal tests. User chart review must approve or revise the candidate before it becomes the approved bias model. No order execution in this first feature.
 
+## D-005 First source delivery
+
+Status: implementation milestone, not structural rule approval. Date: 29 October 2026. Source: user authorized proceeding with the first feature.
+
+Added Pine v6 proposed B4H v0 with learning annotations, a Python reference oracle and ten passing local tests. Pine compilation/replay and full B01–B14/A01–A07 acceptance remain pending. Deliberate first-version restrictions and gaps are recorded in `4H_BIAS.md`: 15m/1H/4H standard charts only, no session-gap inference, no automatic repaired-history recovery, partial annotation-control coverage and numeric diagnostics rather than a complete event exporter. No orders enabled. Do not treat this milestone as completion of the feature acceptance gate.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

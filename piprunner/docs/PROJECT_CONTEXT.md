@@ -19,17 +19,19 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 
 ## Current implementation status
 
-Documentation foundation is present: requirements, editable Word copy, feature roadmap and AI handover files. No executable indicator, order engine or strategy has been implemented. No Pine compilation, TradingView chart replay or empirical backtest has been performed. Existing Piprunner/End-of-P2 source scripts have not been supplied.
+First feature source exists in `src/piprunner_4h_bias.pine`: proposed B4H v0, strict confirmed pivots, protection, learning presets and checklist shell. Ten independent Python reference tests pass via `python -m unittest discover -s piprunner/tests -v`. They do not compile or execute Pine. No Pine compilation, TradingView chart replay or empirical backtest has been performed. Existing Piprunner/End-of-P2 source scripts have not been supplied. No orders or later strategy modules are implemented.
 
 The Word copy could not be visually rendered because the renderer was unavailable. `requirements.md` is the reviewable design text. Later platform confirmation and progress are recorded here and in DECISIONS; the older requirements section D02 asking to choose a platform is superseded by decision D-001. Its other feed/session questions remain open. Do not treat the Word copy as a current progress ledger.
 
 ## First implementation to build
 
-Create a Pine v6 4H Bias indicator in `src/`, with tests/reference fixtures in `tests/`. Implement candidate B4H v0 from requirements Sections 3–5, explicitly labelled PROPOSED. Do not enable orders or claim the user has approved its structural behavior.
+The Pine v6 source and reference fixtures have now been written. Next: compile and add to a TradingView standard 15m/1H/4H chart, fix any compiler/runtime issues, then perform replay and annotation checks in `docs/4H_BIAS.md`. Keep candidate B4H v0 explicitly labelled PROPOSED. Do not enable orders or claim the user has approved its structural behavior.
 
 Candidate summary: strict confirmed L/R pivots (proposed default 2/2), independent high/low lists, two highs and two lows for classification, HH+HL bullish and LH+LL bearish, mixed structure neutral, insufficient data unknown. Close-based protected-level invalidation wins over same-update pivot classification; rearming needs fresh evidence. Verify full details in the requirements before coding.
 
 Include AN01–AN04 and a checklist shell for later stages, plus Training/Guided/Minimal/Off visibility. Distinguish origin/confirmation/publication time. Pending features cannot show PASS. Reference tests B01–B14 and annotation tests A02–A06; B15 needs chart review. Pine compilation and replay are separate verification gates.
+
+Known implementation limits: chart support restricted to standard 15m/1H/4H; native feed sessions; malformed OHLC latches UNKNOWN until corrected-data reload; missing-session detection and automatic recovery not implemented. Initial annotation controls are a subset of the full future design. See `4H_BIAS.md` for precise supported controls and outstanding acceptance tests. Complete event export remains pending; numeric audit plots are present.
 
 ## Still open
 

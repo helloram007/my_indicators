@@ -9,6 +9,7 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 - [Requirements and design](docs/requirements.md)
 - [Editable Word document](docs/requirements.docx)
 - [Feature checklist](docs/roadmap.md)
+- [4H Bias source and TradingView instructions](docs/4H_BIAS.md)
 
 Architecture: **4H bias → 1H setup → 15m structure and execution**.
 
@@ -18,8 +19,8 @@ EMA 36/100 and 15m Williams Fractals are independent optional experiments. Chart
 
 ## Current status
 
-Documentation foundation only. No executable indicator or trading strategy has been implemented or validated. The Word document has not passed visual rendering verification; Markdown is the reviewable text version.
+The first Pine v6 4H Bias indicator is implemented in `src/piprunner_4h_bias.pine`, with configurable learning annotations and an independent Python reference suite (10 tests passing). TradingView compilation and replay are pending; this is not an order-generating strategy. The Word document has not passed visual rendering verification; Markdown is the reviewable text version.
 
 The confirmed platform is **TradingView**. New chart scripts will use **Pine Script v6**. The first implementation is the proposed non-repainting 4H Bias indicator with configurable learning annotations and causal tests. Proposed structural rules remain subject to chart review and approval.
 
-Future source and tests will live in `src/` and `tests/` when implemented. Each feature should include its rule references, tests, annotation behavior and remaining limitations.
+Source and tests live in `src/` and `tests/`. Each feature should include its rule references, tests, annotation behavior and remaining limitations.
