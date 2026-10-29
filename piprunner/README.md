@@ -10,6 +10,7 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 - [Editable Word document](docs/requirements.docx)
 - [Feature checklist](docs/roadmap.md)
 - [4H Bias source and TradingView instructions](docs/4H_BIAS.md)
+- [UI 0.2 display update and review settings](docs/UI_02.md)
 
 Architecture: **4H bias → 1H setup → 15m structure and execution**.
 

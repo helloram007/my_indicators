@@ -19,6 +19,8 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 
 ## Current implementation status
 
+Latest source display revision: UI 0.2. Read `UI_02.md` before chart review. Compact/opaque panel is default; future module rows expand separately; pivot colors reflect structure; label spacing uses fixed closed-4H ranges with deterministic lanes; live-price explanation never affects structural state. Structural calculation and six audit plots are unchanged from the initial source. Ten local reference tests pass; this revised Pine source has not been compiled or visually checked in TradingView. Next action: load UI 0.2 and validate readability plus audit parity on 4H/1H/15m, then replay invalidation/rearming. No next strategy module is implemented yet.
+
 First feature source exists in `src/piprunner_4h_bias.pine`: proposed B4H v0, strict confirmed pivots, protection, learning presets and checklist shell. Ten independent Python reference tests pass via `python -m unittest discover -s piprunner/tests -v`. They do not compile or execute Pine. No Pine compilation, TradingView chart replay or empirical backtest has been performed. Existing Piprunner/End-of-P2 source scripts have not been supplied. No orders or later strategy modules are implemented.
 
 The Word copy could not be visually rendered because the renderer was unavailable. `requirements.md` is the reviewable design text. Later platform confirmation and progress are recorded here and in DECISIONS; the older requirements section D02 asking to choose a platform is superseded by decision D-001. Its other feed/session questions remain open. Do not treat the Word copy as a current progress ledger.

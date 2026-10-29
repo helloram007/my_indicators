@@ -32,6 +32,12 @@ Status: implementation milestone, not structural rule approval. Date: 29 October
 
 Added Pine v6 proposed B4H v0 with learning annotations, a Python reference oracle and ten passing local tests. Pine compilation/replay and full B01–B14/A01–A07 acceptance remain pending. Deliberate first-version restrictions and gaps are recorded in `4H_BIAS.md`: 15m/1H/4H standard charts only, no session-gap inference, no automatic repaired-history recovery, partial annotation-control coverage and numeric diagnostics rather than a complete event exporter. No orders enabled. Do not treat this milestone as completion of the feature acceptance gate.
 
+## D-006 Learning display revision 0.2
+
+Status: implemented presentation proposal; chart acceptance pending. Date: 29 October 2026. Source: user said “next” after review 001 identified overlap and explanatory issues.
+
+Added configurable compact/full panel, optional future rows, opacity, deterministic vertical label spacing, structure-aware colors and a live-price/close-only explanation. Detailed future items are summarized by default, not removed from requirements. Structural calculation and audit plots remain unchanged; high/low snapshot fields were added for drawings only. Full details and remaining tests: `UI_02.md`. No change to B4H approval status.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

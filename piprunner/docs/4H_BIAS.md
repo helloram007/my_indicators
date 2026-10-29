@@ -29,9 +29,11 @@ Origin labels are drawn on the historical pivot candle only after confirmation. 
 
 ## Configuration
 
+UI 0.2 adds a compact/opaque default panel, optional expansion of future checklist rows, structure-aware colors, deterministic label spacing and a developing-price explanation. See `UI_02.md` for settings and review steps. The descriptions below concern the available modes; Training no longer expands every future row by default.
+
 Structure inputs change the research model and trigger recomputation. Learning inputs only change the presentation:
 
-- Training: full available checklist, swings, confirmation and state events.
+- Training: available checklist, swings, confirmation and state events; expand future rows separately.
 - Guided: compact context rows, confirmation and state events; no origin labels.
 - Minimal: state/next step panel and protected level.
 - Off: no educational chart drawings or panel; numeric Data Window diagnostics remain available.

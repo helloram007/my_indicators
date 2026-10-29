@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner 4H Bias • PROPOSED B4H v0", overlay = true, max_labels_count = 200, max_bars_back = 200)
+indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.2", overlay = true, max_labels_count = 200, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -13,6 +13,12 @@ bool showBiasEvents = input.bool(true, "AN03 bias change labels", group = "Learn
 bool showProtection = input.bool(true, "AN04 protected level", group = "Learning — visuals only")
 bool showInvalidations = input.bool(true, "AN04 invalidation labels", group = "Learning — visuals only")
 bool detailed = input.bool(true, "Detailed explanations", group = "Learning — visuals only")
+string panelLayout = input.string("Compact", "Checklist layout", options = ["Compact", "Full"], group = "Learning — visuals only")
+bool showFutureRows = input.bool(false, "Expand future module checklist (Training)", group = "Learning — visuals only")
+bool showDeveloping = input.bool(true, "Show developing-candle explanation", group = "Learning — visuals only")
+float labelSpacing = input.float(0.5, "Label spacing (confirmed 4H range units)", minval = 0, maxval = 5, step = 0.1, group = "Learning — visuals only")
+bool structureColors = input.bool(true, "Color HH/HL bullish and LH/LL bearish", group = "Appearance")
+int panelTransparency = input.int(0, "Panel transparency", minval = 0, maxval = 80, group = "Appearance")
 int retainedLabels = input.int(100, "Retained historical labels", minval = 10, maxval = 150, group = "Learning — visuals only")
 string panelCorner = input.string("Top right", "Panel position", options = ["Top right", "Bottom right", "Top left", "Bottom left"], group = "Learning — visuals only")
 string labelScale = input.string("Small", "Text size", options = ["Small", "Normal", "Large"], group = "Learning — visuals only")
@@ -97,9 +103,9 @@ f_snapshot() =>
     // No new pivot after invalidation means no rearm: the consumed tuple is never reclassified.
     if previous != state or ph or pl or broken or (na(oldProtection) != na(protection))
         version += 1
-    [state[1], protection[1], hPrev[1], hLast[1], lPrev[1], lLast[1], hTime[1], lTime[1], version[1], reason[1], hp[1], lp[1], origin[1], hClass[1], lClass[1], broken[1], dual[1], time_close[1], close[1]]
+    [state[1], protection[1], hPrev[1], hLast[1], lPrev[1], lLast[1], hTime[1], lTime[1], version[1], reason[1], hp[1], lp[1], origin[1], hClass[1], lClass[1], broken[1], dual[1], time_close[1], close[1], high[1], low[1]]
 
-[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose] = request.security(syminfo.tickerid, "240", f_snapshot(), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
+[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose, sourceHigh, sourceLow] = request.security(syminfo.tickerid, "240", f_snapshot(), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
 
 f_state(int s) =>
     na(s) or s == 2 ? "UNKNOWN" : s == 1 ? "BULLISH" : s == -1 ? "BEARISH" : "NEUTRAL"
@@ -107,6 +113,8 @@ f_price(float p) =>
     na(p) ? "—" : str.tostring(p, format.mintick)
 f_time(int t) =>
     na(t) ? "—" : str.format_time(t, "yyyy-MM-dd HH:mm", "UTC")
+f_structure_color(string classification, bool isHigh) =>
+    structureColors ? (classification == "HH" or classification == "HL" ? bullColor : classification == "LH" or classification == "LL" ? bearColor : neutralColor) : (isHigh ? bullColor : bearColor)
 
 bool visible = mode != "Off" and show4H
 bool training = mode == "Training"
@@ -117,19 +125,26 @@ color biasColor = bias == 1 ? bullColor : bias == -1 ? bearColor : neutralColor
 string textSize = labelScale == "Large" ? size.large : labelScale == "Normal" ? size.normal : size.small
 var array<label> labels = array.new<label>()
 var int pruned = 0
+var int labelLane = 0
 // Objects are created only after the confirmed snapshot becomes available on this chart.
 if visible and newSnapshot
+    // Fixed on publication using closed 4H prices; no live ATR or future repositioning.
+    float gap = math.max(sourceHigh - sourceLow, syminfo.mintick * 10) * labelSpacing
+    int lane = labelLane % 3
+    labelLane += 1
+    float upperY = sourceHigh + gap * (lane + 1)
+    float lowerY = sourceLow - gap * (lane + 1)
     string timing = "\nOrigin UTC " + f_time(pivotOrigin) + "\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished on chart UTC " + f_time(time)
     if training and showOrigins and not na(newHigh)
-        array.push(labels, label.new(pivotOrigin, newHigh, "4H " + highClass + (detailed ? "\n" + f_price(newHigh) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_down, color = bullColor, textcolor = color.white, size = textSize, tooltip = timing))
+        array.push(labels, label.new(pivotOrigin, newHigh + gap, "4H " + highClass + (detailed ? "\n" + f_price(newHigh) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_down, color = f_structure_color(highClass, true), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newHigh) + timing))
     if training and showOrigins and not na(newLow)
-        array.push(labels, label.new(pivotOrigin, newLow, "4H " + lowClass + (detailed ? "\n" + f_price(newLow) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_up, color = bearColor, textcolor = color.white, size = textSize, tooltip = timing))
+        array.push(labels, label.new(pivotOrigin, newLow - gap, "4H " + lowClass + (detailed ? "\n" + f_price(newLow) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_up, color = f_structure_color(lowClass, false), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newLow) + timing))
     if expanded and showConfirmations and (not na(newHigh) or not na(newLow))
-        array.push(labels, label.new(time, sourceClose, "4H " + (not na(newHigh) ? highClass : lowClass) + " CONFIRMED" + (detailed ? "\n" + str.tostring(rightBars) + " right bars closed" : ""), xloc = xloc.bar_time, color = neutralColor, textcolor = color.white, size = textSize, tooltip = timing))
+        array.push(labels, label.new(time, not na(newHigh) ? upperY : lowerY, "4H " + (not na(newHigh) ? highClass : lowClass) + " CONFIRMED", xloc = xloc.bar_time, style = not na(newHigh) ? label.style_label_down : label.style_label_up, color = neutralColor, textcolor = color.white, size = textSize, tooltip = str.tostring(rightBars) + " right bars closed" + timing))
     if expanded and ((changed and showBiasEvents) or (invalidated and showInvalidations))
-        array.push(labels, label.new(time, sourceClose, "4H " + f_state(bias) + (detailed ? "\n" + why + "\nBias is not an entry" : ""), xloc = xloc.bar_time, color = biasColor, textcolor = color.white, size = textSize, tooltip = "Confirmed UTC " + f_time(confirmedAt) + "\nPublished UTC " + f_time(time)))
+        array.push(labels, label.new(time, upperY + gap * 2, "4H " + f_state(bias), xloc = xloc.bar_time, style = label.style_label_down, color = biasColor, textcolor = color.white, size = textSize, tooltip = why + "\nBias is not an entry\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished UTC " + f_time(time)))
     if training and ambiguous and showConfirmations
-        array.push(labels, label.new(time, sourceClose, "4H dual pivot discarded", xloc = xloc.bar_time, color = neutralColor, textcolor = color.white, size = textSize))
+        array.push(labels, label.new(time, lowerY - gap * 2, "4H dual pivot discarded", xloc = xloc.bar_time, color = neutralColor, textcolor = color.white, size = textSize))
     while array.size(labels) > retainedLabels
         label.delete(array.shift(labels))
         pruned += 1
@@ -144,16 +159,16 @@ plot(h1, "Audit latest high", display = display.data_window)
 plot(l1, "Audit latest low", display = display.data_window)
 
 string corner = panelCorner == "Top left" ? position.top_left : panelCorner == "Bottom left" ? position.bottom_left : panelCorner == "Bottom right" ? position.bottom_right : position.top_right
-var table panel = table.new(corner, 2, 20, border_width = 1)
+var table panel = table.new(corner, 2, 22, border_width = 1)
 f_row(int row, string title, string value, color c) =>
-    table.cell(panel, 0, row, title, text_color = color.white, bgcolor = color.new(color.black, 15), text_size = textSize, text_halign = text.align_left)
-    table.cell(panel, 1, row, value, text_color = color.white, bgcolor = color.new(c, 30), text_size = textSize, text_halign = text.align_left)
+    table.cell(panel, 0, row, title, text_color = color.white, bgcolor = color.new(color.black, panelTransparency), text_size = textSize, text_halign = text.align_left)
+    table.cell(panel, 1, row, value, text_color = color.white, bgcolor = color.new(c, panelTransparency), text_size = textSize, text_halign = text.align_left)
 if barstate.islast
-    table.clear(panel, 0, 0, 1, 19)
+    table.clear(panel, 0, 0, 1, 21)
     if visible and showPanel
-        f_row(0, "PROPOSED B4H v0 · no orders", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.2", f_state(bias), biasColor)
         f_row(1, "Next step", bias == 1 or bias == -1 ? "1H setup UNDEFINED / not built" : "Wait for confirmed 4H structure", neutralColor)
-        if expanded
+        if expanded and panelLayout == "Full"
             f_row(2, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
             f_row(3, "AN01 Confirmed 4H close UTC", f_time(confirmedAt), neutralColor)
             f_row(4, "AN02 High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
@@ -162,7 +177,14 @@ if barstate.islast
             f_row(7, "AN04 Protection", f_price(protectedPrice), biasColor)
             f_row(8, "AN02 Latest origins UTC", "H " + f_time(ht) + "\nL " + f_time(lt), neutralColor)
             f_row(9, "History", str.tostring(array.size(labels)) + " labels; " + str.tostring(pruned) + " pruned", neutralColor)
-        if training
+        if expanded and panelLayout == "Compact"
+            f_row(2, "4H confirmed UTC", f_time(confirmedAt), neutralColor)
+            f_row(3, "High pair", f_price(h0) + " → " + f_price(h1), neutralColor)
+            f_row(4, "Low pair", f_price(l0) + " → " + f_price(l1), neutralColor)
+            f_row(5, "Protection", f_price(protectedPrice), biasColor)
+            f_row(6, "Reason", why, biasColor)
+            f_row(7, "Later modules", "UNDEFINED / not built · no orders", neutralColor)
+        if training and showFutureRows
             f_row(10, "AN05–06 4H zones / SPA", "UNDEFINED / not implemented", neutralColor)
             f_row(11, "AN07 1H P2 setup", "UNDEFINED / not implemented", neutralColor)
             f_row(12, "AN08 15m CHoCH", "WAITING for approved setup module", neutralColor)
@@ -173,3 +195,11 @@ if barstate.islast
             f_row(17, "AN16 EMA36/100", "DISABLED OPTIONAL / not built", neutralColor)
             f_row(18, "AN17 Williams Fractals 15m", "DISABLED OPTIONAL / not built", neutralColor)
             f_row(19, "AN18 Lifecycle", "4H events only; no entry signals", neutralColor)
+        if showDeveloping
+            // Current chart price is explanatory only, never input to f_snapshot().
+            bool beyond = (bias == -1 and close > protectedPrice) or (bias == 1 and close < protectedPrice)
+            string liveText = beyond ? "Price beyond level; WAIT for 4H close" : "Only a closed 4H break invalidates bias"
+            int statusRow = training and showFutureRows ? 20 : expanded ? (panelLayout == "Full" ? 10 : 8) : 2
+            f_row(statusRow, "4H rule · live price info", liveText, neutralColor)
+            if expanded
+                f_row(statusRow + 1, "Scheduled 4H close UTC", f_time(time_close("240")), neutralColor)
