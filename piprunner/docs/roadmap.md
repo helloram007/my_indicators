@@ -41,6 +41,11 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] Correct S/D invalidation to finalized close beyond the buffered level; wick-only breaches do not invalidate (D-017).
 - [x] Confirm invalidation uses the zone's own timeframe close, independent of viewing chart interval (D-018).
 - [x] Confirm HTF priority: 4H controls direction; 1H/15m cannot override it (D-019).
+- [x] UI 1.0: proposed automated S/D base/departure detector and own-timeframe buffered-close lifecycle.
+- [x] UI 1.0: directional 1H pin/engulf/piercing research candidates at existing 4H/1H S/D; experimental dark-cloud off by default.
+- [x] Pass 32 independent local reference tests; original structure snapshot and 16 audit plots unchanged.
+- [ ] Compile/replay UI 1.0 in TradingView; calibrate proposed zones/SPA against user examples.
+- [ ] Define/implement separate S/R branch; complete setup lifecycle and 15m entry qualification (not implied by research candidates).
 - [x] Review user course and draft `LOCATION_SPA_SPEC.md` with confirmed intent, proposed mechanics and implementation tests.
 - [ ] Finalize zone detector, pattern strength/contact and remaining S/R/short-pattern decisions before setup qualification.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.

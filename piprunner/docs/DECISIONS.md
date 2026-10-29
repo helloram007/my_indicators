@@ -116,6 +116,12 @@ Status: CONFIRMED user instruction. Date: 29 October 2026. Source: “HTF always
 
 Hierarchy is 4H directional authority -> 1H setup qualification -> 15m execution confirmation. Lower-timeframe signals cannot authorize a counter-4H trade; neutral/unknown 4H cannot be replaced by a lower-timeframe direction. Continue to evaluate each zone's validity on its own timeframe close with the approved buffer (D-018). Do not infer automatic exits, stop changes or resurrection of invalidated zones from HTF priority. No trading-code change in this documentation update.
 
+## D-020 Zone and SPA research implementation
+
+Status: implementation authorized by user; exact detector/strength defaults remain PROPOSED. Date: 29 October 2026. Source: user requested implementation and updated script.
+
+UI 1.0 adds fixed configurable base length, two directional departure candles, compactness/body/ATR tests, latest S/D per side/context and frozen 30% buffer with own-timeframe close invalidation. 1H completed-candle pin/engulf/piercing candidates require active known 4H/1H S/D and permitted 4H direction. Dark-cloud counterpart is off by default. Visibility does not affect calculation. S/R is explicitly unimplemented; no approved setup lifecycle, entries/orders or trade management added. See ZONES_SPA_IMPLEMENTATION for exact choices/limits. Thirty-two local oracle tests pass; structural snapshot/16 audit plots unchanged. Pine compilation and replay remain pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

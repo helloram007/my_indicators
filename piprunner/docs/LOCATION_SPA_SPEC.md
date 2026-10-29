@@ -1,6 +1,6 @@
 # Location and Strong Price Action setup specification
 
-Status: confirmed strategy intent plus proposed mechanical details. 29 October 2026. Supersedes the earlier missing SPA definition and the user's corrected P3 wording. Indicator code remains UI 0.9 until this feature is implemented.
+Status: confirmed strategy intent plus proposed mechanical details. 29 October 2026. Supersedes the earlier missing SPA definition and the user's corrected P3 wording. UI 1.0 now implements a proposed S/D detector/lifecycle and 1H S/D SPA research candidates. See ZONES_SPA_IMPLEMENTATION.md for precise implemented defaults and limitations; S/R and complete setup/entry qualification remain pending. Proposed thresholds below are not user-approved strategy rules.
 
 ## Confirmed by the user
 
