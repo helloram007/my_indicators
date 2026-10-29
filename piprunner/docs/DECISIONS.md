@@ -92,6 +92,12 @@ Status: CONFIRMED explicit clarification. Date: 29 October 2026.
 
 User corrected P3 to end of P2 (the pullback). Either S/R OR S/D plus ANY ONE of the listed directional SPA patterns is sufficient for that branch. S/D invalidates on any wick beyond its far edge, NOT a 4H close. Structural bias remains close-confirmed. Exact source detector, pattern thresholds/contact window, S/R invalidation and bearish piercing counterpart remain proposed/open. No zone or SPA code was added by these documentation decisions.
 
+## D-016 Thirty percent base invalidation buffer
+
+Status: CONFIRMED user buffer requirement; full-range measurement is the disclosed implementation interpretation. Date: 29 October 2026. User requested adding 30% of the base beyond its low/high for S/D invalidation.
+
+Supersedes D-015's unbuffered far-edge threshold, retaining wick-based detection. Let R=baseHigh-baseLow; demand level=baseLow-0.30*R, supply level=baseHigh+0.30*R. Proposed configurable percentage defaults to 30%; tick rounding is outward. Base-group selection remains open; use full high-low rather than body or instrument-price percentage as stated to the user. Do not expand the contact zone or change retest-based stops. Specification/tests updated; zone/SPA indicator code remains unimplemented and Pine stays UI 0.9.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
