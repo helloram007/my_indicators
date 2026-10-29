@@ -1,5 +1,11 @@
 # Multi timeframe annotation style
 
+## UI 0.9 provisional breach wording
+
+Protected 4H high/low text now reads `breached, await 4H close` when current chart price is beyond it. This is live explanatory text only; the confirmed state/protection and line geometry remain unchanged. If price returns within the level before confirmation, the text returns to `protected`. Equality is not a breach. Toggle `Explain live breach on protected 4H label` off to retain the older text. No historical wick-breach inference is made. Revised Pine compilation/visual checks remain pending.
+
+The user explicitly reported that protection updated after the 4H candle closed in their example. Record this as one successful observed close-confirmation transition, not full replay acceptance.
+
 ## UI 0.8 combined swing and structure codes
 
 User requested slash notation, for example **4SH/HH**. Temporary swing names now include actual classification: 4SH/HH or 4SH/LH, 4SL/HL or 4SL/LL, and the corresponding 1SH/1SL and 15SH/15SL forms. Initial/equal references display H/L or EH/EL truthfully (for example 1SH/H or 15SL/EL). Do not invent a higher/lower relationship without evidence. Prices, status, colors and logic stay unchanged. The existing toggle still restores the previous timeframe/structure text when off. This supersedes UI 0.7's code-only display. TradingView checks for UI 0.8 remain pending.

@@ -32,6 +32,8 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] UI 0.7 temporary current swing names 4SH/4SL, 1SH/1SL and 15SH/15SL with reversible display toggle.
 - [x] UI 0.8 combines swing names and classification with slash, e.g. 4SH/HH and 4SL/HL.
 - [ ] Visually check all six names and toggle in TradingView; earlier replay acceptance gates remain open.
+- [x] User confirms protection updated after the 4H close in their example; single-transition evidence only.
+- [x] UI 0.9: optional live-breach wording explains why confirmed 4H protection is retained before close.
 - [ ] Define actual location/P2/SPA and 15m entry predicates before promoting research labels into setup/entry qualification.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.

@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner MTF Structure • PROPOSED · UI 0.8", overlay = true, max_labels_count = 300, max_lines_count = 100, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 0.9", overlay = true, max_labels_count = 300, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -39,6 +39,7 @@ bool showOrigins = input.bool(true, "AN02 swing origin labels", group = "Learnin
 bool showConfirmations = input.bool(true, "AN02 confirmation markers", group = "Learning — visuals only")
 bool showBiasEvents = input.bool(true, "AN03 bias change labels", group = "Learning — visuals only")
 bool showProtection = input.bool(true, "AN04 protected level", group = "Learning — visuals only")
+bool showBreachStatus = input.bool(true, "Explain live breach on protected 4H label", group = "Learning — visuals only")
 bool showInvalidations = input.bool(true, "AN04 invalidation labels", group = "Learning — visuals only")
 bool detailed = input.bool(true, "Detailed explanations", group = "Learning — visuals only")
 string panelLayout = input.string("Summary", "Checklist layout", options = ["Summary", "Compact", "Full"], group = "Learning — visuals only")
@@ -233,15 +234,17 @@ if barstate.islast
     if horizontal and showLevels and not na(h1) and not na(ht)
         string highName = na(h0) ? "H" : h1 > h0 ? "HH" : h1 < h0 ? "LH" : "EH"
         bool isProtected = showProtection and protectedPrice == h1
+        string protectionStatus = isProtected and showBreachStatus and close > h1 ? " · breached, await 4H close" : isProtected ? " · protected" : highUsed ? " · broken" : " · unbroken"
         color c = f_structure_color(highName, true)
         highLine := line.new(ht, h1, endAt, h1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = highUsed ? line.style_dotted : line.style_solid)
-        highLabel := label.new(endAt, h1, (swingNames ? "4SH/" + highName : "4H " + highName) + " " + f_price(h1) + (isProtected ? " · protected" : highUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + highName + "; confirmed swing high, not a 1H/15m swing.\nOrigin UTC " + f_time(ht) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+        highLabel := label.new(endAt, h1, (swingNames ? "4SH/" + highName : "4H " + highName) + " " + f_price(h1) + protectionStatus, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + highName + "; confirmed swing high, not a 1H/15m swing.\nOrigin UTC " + f_time(ht) + "\nBreached = live chart price beyond protection; confirmed bias unchanged.\nSolid = unbroken; dotted = consumed by confirmed close.")
     if horizontal and showLevels and not na(l1) and not na(lt)
         string lowName = na(l0) ? "L" : l1 > l0 ? "HL" : l1 < l0 ? "LL" : "EL"
         bool isProtected = showProtection and protectedPrice == l1
+        string protectionStatus = isProtected and showBreachStatus and close < l1 ? " · breached, await 4H close" : isProtected ? " · protected" : lowUsed ? " · broken" : " · unbroken"
         color c = f_structure_color(lowName, false)
         lowLine := line.new(lt, l1, endAt, l1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = lowUsed ? line.style_dotted : line.style_solid)
-        lowLabel := label.new(endAt, l1, (swingNames ? "4SL/" + lowName : "4H " + lowName) + " " + f_price(l1) + (isProtected ? " · protected" : lowUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + lowName + "; confirmed swing low, not a 1H/15m swing.\nOrigin UTC " + f_time(lt) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+        lowLabel := label.new(endAt, l1, (swingNames ? "4SL/" + lowName : "4H " + lowName) + " " + f_price(l1) + protectionStatus, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + lowName + "; confirmed swing low, not a 1H/15m swing.\nOrigin UTC " + f_time(lt) + "\nBreached = live chart price beyond protection; confirmed bias unchanged.\nSolid = unbroken; dotted = consumed by confirmed close.")
     if horizontal and showProtection and not na(protectedPrice) and (not showLevels or (protectedPrice != h1 and protectedPrice != l1))
         protectionLine := line.new(confirmedAt, protectedPrice, endAt, protectedPrice, xloc = xloc.bar_time, color = biasColor, width = 2)
         protectionLabel := label.new(endAt, protectedPrice, "4H protected " + f_price(protectedPrice), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = biasColor, size = textSize)
@@ -370,7 +373,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 22)
     if mode != "Off" and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.8", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.9", f_state(bias), biasColor)
         string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
         f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
         bool threeAligned = (bias == 1 or bias == -1) and oneBias == bias and fifteenBias == bias

@@ -74,6 +74,12 @@ Status: CONFIRMED user display request, implemented UI 0.8. Date: 29 October 202
 
 Combine every temporary swing code with its true classification, e.g. 4SH/HH, 4SL/HL, 1SH/LH and 15SL/LL. Keep initial/equal cases accurate. Supersedes D-011 code-only text, retaining its toggle. Structural snapshot and audit outputs unchanged; platform validation pending.
 
+## D-013 Close confirmation observed and setup definitions requested
+
+Status: observed user evidence and presentation implementation; setup predicates remain OPEN. Date: 29 October 2026.
+
+User reported protection updated after the 4H candle closed. This supports that one close-confirmation transition, not all causal/model acceptance. UI 0.9 adds reversible live-breach wording without changing structural state. On the next development request, asked for the user's exact 4H zone boundaries/invalidation and SPA meaning/1H P2 completion rules. Do not invent those definitions or promote structural alignment to setup qualification while awaiting the answer.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
