@@ -104,6 +104,12 @@ Status: CONFIRMED user correction; invalidation timeframe OPEN. Date: 29 October
 
 User corrected invalidation to require a candle close below/above the base rather than a wick. Retain D-016's 30% base-range buffer as the current interpretation; demand requires close below baseLow-0.30*range, supply close above baseHigh+0.30*range. Wick-only penetration and equality do not invalidate. This supersedes wick-based parts of D-015/D-016. Which candle timeframe supplies that close is not explicit; zone-timeframe close is recommended but not approved. No zone implementation exists yet; Pine remains UI 0.9.
 
+## D-018 Zone timeframe determines invalidation close
+
+Status: CONFIRMED explicit user clarification. Date: 29 October 2026.
+
+Each S/D zone is invalidated by a finalized candle close on its OWN timeframe beyond its buffered level: 4H zone by 4H close, 1H by 1H, 15m by 15m. Viewing a 4H zone on a 15m chart does not let 15m closes invalidate it. Retain the 30% base-range buffer, strict inequality and no wick-only invalidation. Resolves D-017's timeframe question. Each zone lifecycle is independent. No zone code yet; Pine remains UI 0.9.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
