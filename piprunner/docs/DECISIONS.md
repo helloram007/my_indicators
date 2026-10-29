@@ -50,6 +50,12 @@ Status: CONFIRMED user presentation requirements; exact future colors PROPOSED. 
 
 UI 0.4 adds event-text size Normal/Large/Huge, default Large; panel/swing size remains independent. Future timeframe layers must use distinct configurable colors and explicit timeframe prefixes. Proposed palette and validation details are in `ANNOTATION_STYLE.md`. No trading rule approval or 1H/15m implementation is inferred.
 
+## D-009 Independent 1H research structure
+
+Status: implemented PROPOSED structure candidate, not approved setup logic. Date: 29 October 2026. Source: user said “next” after requesting distinct future timeframe colors and large break text.
+
+UI 0.5 adds separate 1H evaluation of the strict-pivot/structure algorithm with independent 2/2 research defaults, blue/orange horizontal references, large BOS/CHoCH and alignment summary. Available on 1H/15m only; deliberately suppressed on 4H to avoid incomplete lower-timeframe sampling. No SPA/P2/zone or entry requirements inferred. Eighteen local reference tests pass; exact-revision Pine compilation and chart replay remain pending. Read `ONE_HOUR_STRUCTURE.md` for rules, controls and validation.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

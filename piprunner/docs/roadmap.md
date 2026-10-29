@@ -23,6 +23,10 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] UI 0.4: independent larger BOS/CHoCH text control and durable future timeframe-color requirements.
 - [ ] Check UI 0.4 larger-text readability in TradingView.
 - [ ] Apply distinct configurable 1H/15m color families and larger BOS/CHoCH text when those layers are implemented.
+- [x] UI 0.5: independent proposed 1H structure, blue/orange levels, large BOS/CHoCH, alignment summary and controls.
+- [x] Pass 18 local reference tests including synthetic multi-timeframe clocks and strength isolation.
+- [ ] Compile/replay UI 0.5 and compare 1H snapshots on 1H/15m; see `ONE_HOUR_STRUCTURE.md`.
+- [ ] Add independent 15m research structure annotations with distinct colors; entry qualification remains a separate gate.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.
 - [ ] Define and implement 4H location and 1H P2/SPA qualification.

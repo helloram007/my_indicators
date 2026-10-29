@@ -1,9 +1,19 @@
 //@version=6
-indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.4", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 0.5", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
 int rightBars = input.int(2, "4H pivot right bars", minval = 1, maxval = 20, group = "Structure — changes logic")
+int oneLeft = input.int(2, "1H pivot left bars (proposed)", minval = 1, maxval = 20, group = "1H structure — changes logic")
+int oneRight = input.int(2, "1H pivot right bars (proposed)", minval = 1, maxval = 20, group = "1H structure — changes logic")
+bool show1H = input.bool(true, "Show 1H structure on 1H/15m charts", group = "1H learning — visuals only")
+bool oneLevels = input.bool(true, "Current 1H high and low", group = "1H learning — visuals only")
+bool oneBreaks = input.bool(true, "1H BOS / CHoCH", group = "1H learning — visuals only")
+int oneHistory = input.int(2, "1H historical break lines", minval = 0, maxval = 20, group = "1H learning — visuals only")
+int oneOffset = input.int(14, "1H current label offset (chart bars)", minval = 0, maxval = 40, group = "1H learning — visuals only")
+color oneBull = input.color(color.blue, "1H bullish", group = "1H appearance")
+color oneBear = input.color(color.orange, "1H bearish", group = "1H appearance")
+color oneNeutral = input.color(color.silver, "1H neutral / unknown", group = "1H appearance")
 string mode = input.string("Training", "Annotation mode", options = ["Training", "Guided", "Minimal", "Off"], group = "Learning — visuals only")
 string drawingStyle = input.string("Horizontal lines", "Structure drawing style", options = ["Horizontal lines", "Legacy labels"], group = "Learning — visuals only")
 bool showLevels = input.bool(true, "Current 4H high and low levels", group = "Horizontal structure — visuals only")
@@ -40,7 +50,7 @@ if not chart.is_standard
 
 // All persistent structural state lives in the requested 4H context.
 // Every returned field is offset, paired with lookahead_on below: no developing HTF field leaks out.
-f_snapshot() =>
+f_snapshot(int pivotLeft, int pivotRight) =>
     var float hPrev = na
     var float hLast = na
     var float lPrev = na
@@ -56,12 +66,12 @@ f_snapshot() =>
     var int consumedHigh = na
     var int consumedLow = na
     bool valid = not na(open) and not na(high) and not na(low) and not na(close) and high >= math.max(open, close) and low <= math.min(open, close) and high >= low
-    bool ph = bar_index >= leftBars + rightBars
+    bool ph = bar_index >= pivotLeft + pivotRight
     bool pl = ph
-    for i = 0 to leftBars + rightBars
-        if i != rightBars
-            ph := ph and not na(high[i]) and high[rightBars] > high[i]
-            pl := pl and not na(low[i]) and low[rightBars] < low[i]
+    for i = 0 to pivotLeft + pivotRight
+        if i != pivotRight
+            ph := ph and not na(high[i]) and high[pivotRight] > high[i]
+            pl := pl and not na(low[i]) and low[pivotRight] < low[i]
     bool dual = ph and pl
     if dual
         ph := false
@@ -92,15 +102,15 @@ f_snapshot() =>
         qualityBlocked := true
     if not qualityBlocked
         if ph
-            hp := high[rightBars]
-            origin := time[rightBars]
+            hp := high[pivotRight]
+            origin := time[pivotRight]
             hClass := na(hLast) ? "H" : hp > hLast ? "HH" : hp < hLast ? "LH" : "EH"
             hPrev := hLast
             hLast := hp
             hTime := origin
         if pl
-            lp := low[rightBars]
-            origin := time[rightBars]
+            lp := low[pivotRight]
+            origin := time[pivotRight]
             lClass := na(lLast) ? "L" : lp > lLast ? "HL" : lp < lLast ? "LL" : "EL"
             lPrev := lLast
             lLast := lp
@@ -136,7 +146,7 @@ f_snapshot() =>
     bool lowUsed = not na(lTime) and consumedLow == lTime
     [state[1], protection[1], hPrev[1], hLast[1], lPrev[1], lLast[1], hTime[1], lTime[1], version[1], reason[1], hp[1], lp[1], origin[1], hClass[1], lClass[1], broken[1], dual[1], time_close[1], close[1], high[1], low[1], breakCode[1], breakLevel[1], breakOrigin[1], highUsed[1], lowUsed[1]]
 
-[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose, sourceHigh, sourceLow, breakCode, breakLevel, breakOrigin, highUsed, lowUsed] = request.security(syminfo.tickerid, "240", f_snapshot(), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
+[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose, sourceHigh, sourceLow, breakCode, breakLevel, breakOrigin, highUsed, lowUsed] = request.security(syminfo.tickerid, "240", f_snapshot(leftBars, rightBars), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
 
 f_state(int s) =>
     na(s) or s == 2 ? "UNKNOWN" : s == 1 ? "BULLISH" : s == -1 ? "BEARISH" : "NEUTRAL"
@@ -234,6 +244,60 @@ plot(protectedPrice, "Audit protected price", display = display.data_window)
 plot(h1, "Audit latest high", display = display.data_window)
 plot(l1, "Audit latest low", display = display.data_window)
 
+// Independent 1H context. Never request 1H via request.security() on a 4H chart:
+// it would collapse several intrabars and could miss structure events.
+bool supports1H = timeframe.in_seconds() <= 3600
+int oneBias = na
+float oneProtection = na
+int oneConfirmed = na
+float oneHigh = na
+float oneLow = na
+var array<line> oneLines = array.new<line>()
+var array<label> oneLabels = array.new<label>()
+var line oneHighLine = na
+var line oneLowLine = na
+var label oneHighLabel = na
+var label oneLowLabel = na
+if supports1H
+    [s, p, hPrev1, hLast1, lPrev1, lLast1, hTime1, lTime1, v, reason1, hp1, lp1, origin1, hc1, lc1, broken1, dual1, at1, close1, hi1, lo1, code1, level1, reference1, usedH1, usedL1] = request.security(syminfo.tickerid, "60", f_snapshot(oneLeft, oneRight), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
+    oneBias := s
+    oneProtection := p
+    oneConfirmed := at1
+    oneHigh := hLast1
+    oneLow := lLast1
+    bool oneVisible = mode != "Off" and show1H
+    bool oneNew = not na(at1) and (na(at1[1]) or at1 != at1[1])
+    if oneVisible and expanded and oneBreaks and oneHistory > 0 and oneNew and code1 != 0
+        color c = code1 > 0 ? oneBull : oneBear
+        string title = "1H " + (math.abs(code1) == 1 ? "BOS" : math.abs(code1) == 2 ? "CHoCH" : "Break") + (code1 > 0 ? " ↑" : " ↓")
+        array.push(oneLines, line.new(reference1, level1, at1, level1, xloc = xloc.bar_time, color = c, style = line.style_dashed, width = levelWidth))
+        array.push(oneLabels, label.new(at1, level1, title, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = breakTextSize, tooltip = "PROPOSED 1H structure only; P2/SPA setup not qualified\nLevel " + f_price(level1) + "\nConfirmed UTC " + f_time(at1) + "\nPublished UTC " + f_time(time)))
+        while array.size(oneLines) > oneHistory
+            line.delete(array.shift(oneLines))
+            label.delete(array.shift(oneLabels))
+    if barstate.islast
+        line.delete(oneHighLine)
+        line.delete(oneLowLine)
+        label.delete(oneHighLabel)
+        label.delete(oneLowLabel)
+        int end1 = time + int(timeframe.in_seconds() * 1000) * oneOffset
+        if oneVisible and oneLevels and not na(hLast1)
+            string name = na(hPrev1) ? "H" : hLast1 > hPrev1 ? "HH" : hLast1 < hPrev1 ? "LH" : "EH"
+            color c = name == "HH" ? oneBull : name == "LH" ? oneBear : oneNeutral
+            oneHighLine := line.new(hTime1, hLast1, end1, hLast1, xloc = xloc.bar_time, color = c, style = usedH1 ? line.style_dotted : line.style_solid, width = 1)
+            oneHighLabel := label.new(end1, hLast1, "1H " + name + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H confirmed swing; setup still UNDEFINED\nOrigin UTC " + f_time(hTime1))
+        if oneVisible and oneLevels and not na(lLast1)
+            string name = na(lPrev1) ? "L" : lLast1 > lPrev1 ? "HL" : lLast1 < lPrev1 ? "LL" : "EL"
+            color c = name == "HL" ? oneBull : name == "LL" ? oneBear : oneNeutral
+            oneLowLine := line.new(lTime1, lLast1, end1, lLast1, xloc = xloc.bar_time, color = c, style = usedL1 ? line.style_dotted : line.style_solid, width = 1)
+            oneLowLabel := label.new(end1, lLast1, "1H " + name + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H confirmed swing; setup still UNDEFINED\nOrigin UTC " + f_time(lTime1))
+
+plot(oneBias, "Audit 1H structure state", display = display.data_window)
+plot(oneProtection, "Audit 1H structural protection", display = display.data_window)
+plot(oneConfirmed, "Audit 1H confirmation epoch ms", display = display.data_window)
+plot(oneHigh, "Audit 1H latest high", display = display.data_window)
+plot(oneLow, "Audit 1H latest low", display = display.data_window)
+
 string corner = panelCorner == "Top left" ? position.top_left : panelCorner == "Bottom left" ? position.bottom_left : panelCorner == "Bottom right" ? position.bottom_right : position.top_right
 var table panel = table.new(corner, 2, 22, border_width = 1)
 f_row(int row, string title, string value, color c) =>
@@ -241,9 +305,10 @@ f_row(int row, string title, string value, color c) =>
     table.cell(panel, 1, row, value, text_color = color.white, bgcolor = color.new(c, panelTransparency), text_size = textSize, text_halign = text.align_left)
 if barstate.islast
     table.clear(panel, 0, 0, 1, 21)
-    if visible and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.4", f_state(bias), biasColor)
-        f_row(1, "Next step", bias == 1 or bias == -1 ? "1H setup UNDEFINED / not built" : "Wait for confirmed 4H structure", neutralColor)
+    if mode != "Off" and showPanel
+        f_row(0, "4H · PROPOSED · UI 0.5", f_state(bias), biasColor)
+        string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
+        f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
         if expanded and panelLayout == "Full"
             f_row(2, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
             f_row(3, "AN01 Confirmed 4H close UTC", f_time(confirmedAt), neutralColor)
@@ -262,7 +327,7 @@ if barstate.islast
             f_row(7, "Later modules", "UNDEFINED / not built · no orders", neutralColor)
         if training and showFutureRows
             f_row(10, "AN05–06 4H zones / SPA", "UNDEFINED / not implemented", neutralColor)
-            f_row(11, "AN07 1H P2 setup", "UNDEFINED / not implemented", neutralColor)
+            f_row(11, "AN07 1H P2 setup", "Structure only · SPA/P2 UNDEFINED", neutralColor)
             f_row(12, "AN08 15m CHoCH", "WAITING for approved setup module", neutralColor)
             f_row(13, "AN09 Swing break", "WAITING for CHoCH module", neutralColor)
             f_row(14, "AN10 Retest", "WAITING for swing break module", neutralColor)
