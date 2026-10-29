@@ -19,6 +19,8 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 
 ## Current implementation status
 
+Latest presentation is **UI 0.7**, superseding UI 0.6 text below. User requested temporary exact current swing codes: 4SH/4SL, 1SH/1SL, 15SH/15SL. Toggle defaults on; off restores structure text. Tooltip retains HH/HL/LH/LL; existing colors, BOS/CHoCH size, timeframe availability and logic stay unchanged. SL here means Swing Low. See ANNOTATION_STYLE. Source-level snapshot/audit comparison passes; this revision's TradingView checks remain pending. No new trading predicates implemented.
+
 Latest source is **UI 0.6**, title Piprunner MTF Structure. Independent proposed 4H/1H/15m strict-pivot research structure layers are implemented. Colors: 4H teal/red, 1H blue/orange, 15m fuchsia/yellow; all configurable. Large BOS/CHoCH, horizontal current levels, bounded history and independent visibility remain. 1H is available on 1H/15m only; 15m on 15m only, avoiding collapsed lower-timeframe sampling. Full details: FIFTEEN_MINUTE_STRUCTURE.md and ONE_HOUR_STRUCTURE.md. These are not qualified End-of-P2 setup/entry predicates.
 
 Source stays `src/piprunner_4h_bias.pine`. Run `python -m unittest discover -s piprunner/tests -v`: 21 reference tests pass. Source comparison confirms shared snapshot, existing 4H/1H request/render blocks and 11 audit outputs unchanged. These checks do not execute Pine. UI 0.5 is visible in the latest user screenshot and user reports a clear view; record partial runtime/presentation acceptance only. UI 0.6 compilation and three-layer replay/visual checks remain pending. No orders, retest, signal-candle entry, P2/SPA qualification or empirical backtests exist. Existing strategy scripts have not been supplied.

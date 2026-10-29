@@ -29,6 +29,8 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] UI 0.6: independent 15m research structure on 15m charts, fuchsia/yellow levels, large BOS/CHoCH and layer controls.
 - [x] Pass 21 local reference tests; snapshot, higher-layer request/render blocks and 11 audit plots unchanged.
 - [ ] Compile/replay UI 0.6, check three-layer readability and fixed-history annotation-toggle parity.
+- [x] UI 0.7 temporary current swing names 4SH/4SL, 1SH/1SL and 15SH/15SL with reversible display toggle.
+- [ ] Visually check all six names and toggle in TradingView; earlier replay acceptance gates remain open.
 - [ ] Define actual location/P2/SPA and 15m entry predicates before promoting research labels into setup/entry qualification.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.

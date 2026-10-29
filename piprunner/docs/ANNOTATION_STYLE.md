@@ -1,5 +1,11 @@
 # Multi timeframe annotation style
 
+## UI 0.7 temporary swing names
+
+CONFIRMED user request: label the current confirmed swing-high and swing-low levels **4SH / 4SL**, **1SH / 1SL**, **15SH / 15SL**. The new `Temporary swing names` input defaults on; disable it to restore HH/HL/LH/LL text. Actual structural comparisons remain available in level tooltips. Prices, protection/broken status, colors and large BOS/CHoCH labels remain unchanged. In these codes SL means Swing Low, not an order stop-loss.
+
+These names apply to the existing current reference levels; no unconfirmed swings or extra historical bubble labels are introduced. The 4H legacy origin labels also use 4SH/4SL when enabled. Display availability is unchanged: 4H levels on all supported charts, 1H on 1H/15m, and 15m on 15m only. Structure calculations and audit plots are unchanged. Source checks pass; TradingView visual/compilation checks for UI 0.7 remain pending.
+
 ## Confirmed user preferences
 
 29 October 2026: user reviewed UI 0.3 as a clear/promising view, requested different colors when 1H and 15m structure annotations are added, and larger BOS/CHoCH text everywhere those events appear. This is presentation feedback, not approval of the proposed structural model or unresolved entry predicates.

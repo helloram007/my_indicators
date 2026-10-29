@@ -62,6 +62,12 @@ Status: implemented PROPOSED structure candidate; entry rules remain OPEN. Date:
 
 UI 0.6 adds the independent common strict-pivot model on 15m, with its own 2/2 research defaults, fuchsia/yellow levels, large BOS/CHoCH and controls. Only requested on 15m charts; no collapsed intrabar sampling on higher charts. Shared snapshot logic and higher-layer outputs are unchanged. Twenty-one local reference tests pass; platform validation remains pending. Read `FIFTEEN_MINUTE_STRUCTURE.md`. Three-direction alignment is descriptive, not an entry signal. No Piprunner optional filter or End-of-P2 setup rule is silently enabled.
 
+## D-011 Temporary swing name codes
+
+Status: CONFIRMED user presentation request, implemented UI 0.7. Date: 29 October 2026.
+
+Current confirmed level labels use 4SH/4SL, 1SH/1SL, 15SH/15SL. Default-on temporary naming toggle restores prior structure labels when off. No change to pivot/structure logic, line price, color or timeframe coverage. SL means Swing Low in this context, not stop-loss. No extra historical annotations added. Source snapshot/audit comparison passes; platform validation remains pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
