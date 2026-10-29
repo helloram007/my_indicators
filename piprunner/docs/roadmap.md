@@ -14,7 +14,11 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [ ] Compile the Pine source and validate replay/visual behavior in TradingView.
 - [x] Review user snapshot on 4H/1H/15m: matching current state and partial visual evidence; see `CHART_REVIEW_001.md`.
 - [x] Implement UI 0.2 compact/opaque panel, optional future rows, label spacing, structure colors and developing-price explanation.
-- [ ] Validate UI 0.2 compilation and visual behavior in TradingView; see `UI_02.md`.
+- [x] UI 0.2 output visible in user screenshot; presentation superseded by UI 0.3 before full acceptance.
+- [x] Review user UI 0.2 screenshot: indicator runs but bubble clutter remains unacceptable; superseded by UI 0.3.
+- [x] Implement UI 0.3 horizontal levels, updating current labels, bounded proposed 4H BOS/CHoCH history and Summary panel.
+- [x] Pass 15 local reference tests (bias and educational break overlay); platform checks remain separate.
+- [ ] Validate UI 0.3 compilation, line readability, publication timing and numeric audit parity in TradingView.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.
 - [ ] Define and implement 4H location and 1H P2/SPA qualification.

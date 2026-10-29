@@ -29,6 +29,8 @@ Origin labels are drawn on the historical pivot candle only after confirmation. 
 
 ## Configuration
 
+Current display is **UI 0.3**: horizontal structure levels and updating timeframe labels replace bubble history by default. See `UI_03.md` for proposed 4H BOS/CHoCH definitions, controls and current validation status. UI 0.2 below describes the retained Legacy labels option.
+
 UI 0.2 adds a compact/opaque default panel, optional expansion of future checklist rows, structure-aware colors, deterministic label spacing and a developing-price explanation. See `UI_02.md` for settings and review steps. The descriptions below concern the available modes; Training no longer expands every future row by default.
 
 Structure inputs change the research model and trigger recomputation. Learning inputs only change the presentation:

@@ -38,6 +38,12 @@ Status: implemented presentation proposal; chart acceptance pending. Date: 29 Oc
 
 Added configurable compact/full panel, optional future rows, opacity, deterministic vertical label spacing, structure-aware colors and a live-price/close-only explanation. Detailed future items are summarized by default, not removed from requirements. Structural calculation and audit plots remain unchanged; high/low snapshot fields were added for drawings only. Full details and remaining tests: `UI_02.md`. No change to B4H approval status.
 
+## D-007 Horizontal levels and break annotations
+
+Status: requested presentation implemented; BOS/CHoCH classification PROPOSED pending chart review. Date: 29 October 2026. Source: user supplied UI 0.2 screenshot, said chart looks clumsy and requested horizontal annotations, current annotation, BOS/CHoCH and timeframe.
+
+Default Horizontal lines replaces bubble history with two current 4H references, right-edge labels, three retained break segments and Summary panel. Detailed semantics and controls are in `UI_03.md`. 4H close crossing a confirmed reference is BOS with prior directional bias, CHoCH against it, otherwise unclassified Break; consume each pivot once. No 1H/15m engine or order conditions added. Existing bias calculations unchanged. Fifteen independent local tests pass; Pine compilation of this revision remains pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

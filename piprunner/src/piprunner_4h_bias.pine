@@ -1,10 +1,16 @@
 //@version=6
-indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.2", overlay = true, max_labels_count = 200, max_bars_back = 200)
+indicator("Piprunner 4H Bias • PROPOSED B4H v0 · UI 0.3", overlay = true, max_labels_count = 200, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
 int rightBars = input.int(2, "4H pivot right bars", minval = 1, maxval = 20, group = "Structure — changes logic")
 string mode = input.string("Training", "Annotation mode", options = ["Training", "Guided", "Minimal", "Off"], group = "Learning — visuals only")
+string drawingStyle = input.string("Horizontal lines", "Structure drawing style", options = ["Horizontal lines", "Legacy labels"], group = "Learning — visuals only")
+bool showLevels = input.bool(true, "Current 4H high and low levels", group = "Horizontal structure — visuals only")
+bool showBreaks = input.bool(true, "Confirmed 4H BOS / CHoCH (proposed)", group = "Horizontal structure — visuals only")
+int retainedBreaks = input.int(3, "Historical break lines (0 = current levels only)", minval = 0, maxval = 20, group = "Horizontal structure — visuals only")
+int levelLabelOffset = input.int(6, "Current label offset (chart bars)", minval = 0, maxval = 30, group = "Horizontal structure — visuals only")
+int levelWidth = input.int(1, "Level line width", minval = 1, maxval = 3, group = "Horizontal structure — visuals only")
 bool show4H = input.bool(true, "Show 4H annotations", group = "Learning — visuals only")
 bool showPanel = input.bool(true, "Show checklist panel", group = "Learning — visuals only")
 bool showOrigins = input.bool(true, "AN02 swing origin labels", group = "Learning — visuals only")
@@ -13,7 +19,7 @@ bool showBiasEvents = input.bool(true, "AN03 bias change labels", group = "Learn
 bool showProtection = input.bool(true, "AN04 protected level", group = "Learning — visuals only")
 bool showInvalidations = input.bool(true, "AN04 invalidation labels", group = "Learning — visuals only")
 bool detailed = input.bool(true, "Detailed explanations", group = "Learning — visuals only")
-string panelLayout = input.string("Compact", "Checklist layout", options = ["Compact", "Full"], group = "Learning — visuals only")
+string panelLayout = input.string("Summary", "Checklist layout", options = ["Summary", "Compact", "Full"], group = "Learning — visuals only")
 bool showFutureRows = input.bool(false, "Expand future module checklist (Training)", group = "Learning — visuals only")
 bool showDeveloping = input.bool(true, "Show developing-candle explanation", group = "Learning — visuals only")
 float labelSpacing = input.float(0.5, "Label spacing (confirmed 4H range units)", minval = 0, maxval = 5, step = 0.1, group = "Learning — visuals only")
@@ -45,6 +51,9 @@ f_snapshot() =>
     var int version = 0
     var string reason = "INSUFFICIENT_STRUCTURE"
     var bool qualityBlocked = false
+    // Educational break detector is independent of bias classification. It does not change state.
+    var int consumedHigh = na
+    var int consumedLow = na
     bool valid = not na(open) and not na(high) and not na(low) and not na(close) and high >= math.max(open, close) and low <= math.min(open, close) and high >= low
     bool ph = bar_index >= leftBars + rightBars
     bool pl = ph
@@ -59,6 +68,20 @@ f_snapshot() =>
     bool broken = (state == 1 and close < protection) or (state == -1 and close > protection)
     int previous = state
     float oldProtection = protection
+    int breakCode = 0 // +/-1 BOS, +/-2 CHoCH, +/-3 unclassified break
+    float breakLevel = na
+    int breakOrigin = na
+    if valid and not qualityBlocked
+        if not na(hLast) and (na(consumedHigh) or consumedHigh != hTime) and close > hLast and close[1] <= hLast
+            breakCode := previous == 1 ? 1 : previous == -1 ? 2 : 3
+            breakLevel := hLast
+            breakOrigin := hTime
+            consumedHigh := hTime
+        else if not na(lLast) and (na(consumedLow) or consumedLow != lTime) and close < lLast and close[1] >= lLast
+            breakCode := previous == -1 ? -1 : previous == 1 ? -2 : -3
+            breakLevel := lLast
+            breakOrigin := lTime
+            consumedLow := lTime
     float hp = na
     float lp = na
     int origin = na
@@ -81,6 +104,11 @@ f_snapshot() =>
             lPrev := lLast
             lLast := lp
             lTime := origin
+        // Already broken at discovery: show consumed but never invent a delayed break event.
+        if ph and close > hLast
+            consumedHigh := hTime
+        if pl and close < lLast
+            consumedLow := lTime
     bool enough = not na(hPrev) and not na(lPrev)
     if qualityBlocked
         state := 2
@@ -103,9 +131,11 @@ f_snapshot() =>
     // No new pivot after invalidation means no rearm: the consumed tuple is never reclassified.
     if previous != state or ph or pl or broken or (na(oldProtection) != na(protection))
         version += 1
-    [state[1], protection[1], hPrev[1], hLast[1], lPrev[1], lLast[1], hTime[1], lTime[1], version[1], reason[1], hp[1], lp[1], origin[1], hClass[1], lClass[1], broken[1], dual[1], time_close[1], close[1], high[1], low[1]]
+    bool highUsed = not na(hTime) and consumedHigh == hTime
+    bool lowUsed = not na(lTime) and consumedLow == lTime
+    [state[1], protection[1], hPrev[1], hLast[1], lPrev[1], lLast[1], hTime[1], lTime[1], version[1], reason[1], hp[1], lp[1], origin[1], hClass[1], lClass[1], broken[1], dual[1], time_close[1], close[1], high[1], low[1], breakCode[1], breakLevel[1], breakOrigin[1], highUsed[1], lowUsed[1]]
 
-[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose, sourceHigh, sourceLow] = request.security(syminfo.tickerid, "240", f_snapshot(), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
+[bias, protectedPrice, h0, h1, l0, l1, ht, lt, evidenceVersion, why, newHigh, newLow, pivotOrigin, highClass, lowClass, invalidated, ambiguous, confirmedAt, sourceClose, sourceHigh, sourceLow, breakCode, breakLevel, breakOrigin, highUsed, lowUsed] = request.security(syminfo.tickerid, "240", f_snapshot(), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
 
 f_state(int s) =>
     na(s) or s == 2 ? "UNKNOWN" : s == 1 ? "BULLISH" : s == -1 ? "BEARISH" : "NEUTRAL"
@@ -127,7 +157,7 @@ var array<label> labels = array.new<label>()
 var int pruned = 0
 var int labelLane = 0
 // Objects are created only after the confirmed snapshot becomes available on this chart.
-if visible and newSnapshot
+if visible and newSnapshot and drawingStyle == "Legacy labels"
     // Fixed on publication using closed 4H prices; no live ATR or future repositioning.
     float gap = math.max(sourceHigh - sourceLow, syminfo.mintick * 10) * labelSpacing
     int lane = labelLane % 3
@@ -149,7 +179,51 @@ if visible and newSnapshot
         label.delete(array.shift(labels))
         pruned += 1
 
-plot(visible and showProtection ? protectedPrice : na, "4H protected level", color = biasColor, linewidth = 2, style = plot.style_linebr)
+// Horizontal mode uses only two live levels plus a bounded number of completed break segments.
+bool horizontal = visible and drawingStyle == "Horizontal lines"
+var line highLine = na
+var line lowLine = na
+var label highLabel = na
+var label lowLabel = na
+var line protectionLine = na
+var label protectionLabel = na
+var array<line> breakLines = array.new<line>()
+var array<label> breakLabels = array.new<label>()
+if horizontal and expanded and newSnapshot and showBreaks and retainedBreaks > 0 and breakCode != 0
+    color eventColor = breakCode > 0 ? bullColor : bearColor
+    string eventName = math.abs(breakCode) == 1 ? "BOS" : math.abs(breakCode) == 2 ? "CHoCH" : "Break"
+    string eventText = "4H " + eventName + (breakCode > 0 ? " ↑" : " ↓")
+    array.push(breakLines, line.new(breakOrigin, breakLevel, confirmedAt, breakLevel, xloc = xloc.bar_time, color = eventColor, style = line.style_dashed, width = levelWidth))
+    array.push(breakLabels, label.new(confirmedAt, breakLevel, eventText, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = eventColor, size = textSize, tooltip = "PROPOSED 4H display classification\nLevel " + f_price(breakLevel) + "\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished UTC " + f_time(time) + "\nNot a 15m entry CHoCH"))
+    while array.size(breakLines) > retainedBreaks
+        line.delete(array.shift(breakLines))
+        label.delete(array.shift(breakLabels))
+
+if barstate.islast
+    line.delete(highLine)
+    line.delete(lowLine)
+    label.delete(highLabel)
+    label.delete(lowLabel)
+    line.delete(protectionLine)
+    label.delete(protectionLabel)
+    int endAt = time + int(timeframe.in_seconds() * 1000) * levelLabelOffset
+    if horizontal and showLevels and not na(h1) and not na(ht)
+        string highName = na(h0) ? "H" : h1 > h0 ? "HH" : h1 < h0 ? "LH" : "EH"
+        bool isProtected = showProtection and protectedPrice == h1
+        color c = f_structure_color(highName, true)
+        highLine := line.new(ht, h1, endAt, h1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = highUsed ? line.style_dotted : line.style_solid)
+        highLabel := label.new(endAt, h1, "4H " + highName + " " + f_price(h1) + (isProtected ? " · protected" : highUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "Confirmed 4H reference, not a 1H/15m swing.\nOrigin UTC " + f_time(ht) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+    if horizontal and showLevels and not na(l1) and not na(lt)
+        string lowName = na(l0) ? "L" : l1 > l0 ? "HL" : l1 < l0 ? "LL" : "EL"
+        bool isProtected = showProtection and protectedPrice == l1
+        color c = f_structure_color(lowName, false)
+        lowLine := line.new(lt, l1, endAt, l1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = lowUsed ? line.style_dotted : line.style_solid)
+        lowLabel := label.new(endAt, l1, "4H " + lowName + " " + f_price(l1) + (isProtected ? " · protected" : lowUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "Confirmed 4H reference, not a 1H/15m swing.\nOrigin UTC " + f_time(lt) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+    if horizontal and showProtection and not na(protectedPrice) and (not showLevels or (protectedPrice != h1 and protectedPrice != l1))
+        protectionLine := line.new(confirmedAt, protectedPrice, endAt, protectedPrice, xloc = xloc.bar_time, color = biasColor, width = 2)
+        protectionLabel := label.new(endAt, protectedPrice, "4H protected " + f_price(protectedPrice), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = biasColor, size = textSize)
+
+plot(visible and showProtection and drawingStyle == "Legacy labels" ? protectedPrice : na, "4H protected level", color = biasColor, linewidth = 2, style = plot.style_linebr)
 // Exportable diagnostics intentionally remain independent of visual presets.
 plot(bias, "Audit bias 2 unknown 0 neutral 1 bull -1 bear", display = display.data_window)
 plot(evidenceVersion, "Audit evidence version", display = display.data_window)
@@ -166,7 +240,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 21)
     if visible and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.2", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.3", f_state(bias), biasColor)
         f_row(1, "Next step", bias == 1 or bias == -1 ? "1H setup UNDEFINED / not built" : "Wait for confirmed 4H structure", neutralColor)
         if expanded and panelLayout == "Full"
             f_row(2, "AN01 Feed / tick / timezone", syminfo.tickerid + " / " + f_price(syminfo.mintick) + " / " + syminfo.timezone, neutralColor)
