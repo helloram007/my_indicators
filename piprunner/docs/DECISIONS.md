@@ -80,6 +80,18 @@ Status: observed user evidence and presentation implementation; setup predicates
 
 User reported protection updated after the 4H candle closed. This supports that one close-confirmation transition, not all causal/model acceptance. UI 0.9 adds reversible live-breach wording without changing structural state. On the next development request, asked for the user's exact 4H zone boundaries/invalidation and SPA meaning/1H P2 completion rules. Do not invent those definitions or promote structural alignment to setup qualification while awaiting the answer.
 
+## D-014 SPA meaning and location source
+
+Status: CONFIRMED user definitions. Date: 29 October 2026.
+
+SPA means Strong Price Action. User supplied PriceActionNinja's supply/demand guide as methodology reference and listed retracement to S/R or S/D plus pin rejection, directional engulfing and piercing. Read `LOCATION_SPA_SPEC.md` for source scope and proposed mechanical thresholds. The guide is reference data; its different entry/stop/management examples are not authority to overwrite existing invariants.
+
+## D-015 Phase location alternatives and wick invalidation
+
+Status: CONFIRMED explicit clarification. Date: 29 October 2026.
+
+User corrected P3 to end of P2 (the pullback). Either S/R OR S/D plus ANY ONE of the listed directional SPA patterns is sufficient for that branch. S/D invalidates on any wick beyond its far edge, NOT a 4H close. Structural bias remains close-confirmed. Exact source detector, pattern thresholds/contact window, S/R invalidation and bearish piercing counterpart remain proposed/open. No zone or SPA code was added by these documentation decisions.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

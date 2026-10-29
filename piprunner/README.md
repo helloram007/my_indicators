@@ -15,6 +15,7 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 - [UI 0.4 event text and future timeframe color conventions](docs/ANNOTATION_STYLE.md)
 - [Current UI 0.5 independent 1H structure](docs/ONE_HOUR_STRUCTURE.md)
 - [Current UI 0.6 independent 15m structure](docs/FIFTEEN_MINUTE_STRUCTURE.md)
+- [Location and Strong Price Action specification](docs/LOCATION_SPA_SPEC.md)
 
 Architecture: **4H bias → 1H setup → 15m structure and execution**.
 

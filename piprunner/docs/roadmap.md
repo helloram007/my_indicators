@@ -35,6 +35,10 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [x] User confirms protection updated after the 4H close in their example; single-transition evidence only.
 - [x] UI 0.9: optional live-breach wording explains why confirmed 4H protection is retained before close.
 - [ ] Define actual location/P2/SPA and 15m entry predicates before promoting research labels into setup/entry qualification.
+- [x] Confirm SPA = Strong Price Action; end of P2; either S/R or S/D plus any one directional SPA pattern.
+- [x] Confirm S/D zone invalidation on any far-edge wick breach; keep 4H structural bias close-confirmed.
+- [x] Review user course and draft `LOCATION_SPA_SPEC.md` with confirmed intent, proposed mechanics and implementation tests.
+- [ ] Finalize zone detector, pattern strength/contact and remaining S/R/short-pattern decisions before setup qualification.
 - [ ] Pass B01–B14 causal and state tests; review B15 chart examples.
 - [ ] Approve or revise the 4H structural model.
 - [ ] Define and implement 4H location and 1H P2/SPA qualification.
