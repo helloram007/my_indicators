@@ -68,6 +68,12 @@ Status: CONFIRMED user presentation request, implemented UI 0.7. Date: 29 Octobe
 
 Current confirmed level labels use 4SH/4SL, 1SH/1SL, 15SH/15SL. Default-on temporary naming toggle restores prior structure labels when off. No change to pivot/structure logic, line price, color or timeframe coverage. SL means Swing Low in this context, not stop-loss. No extra historical annotations added. Source snapshot/audit comparison passes; platform validation remains pending.
 
+## D-012 Slash classification in swing labels
+
+Status: CONFIRMED user display request, implemented UI 0.8. Date: 29 October 2026. Source: user requested HH/HL with slash, example 4SH/HH.
+
+Combine every temporary swing code with its true classification, e.g. 4SH/HH, 4SL/HL, 1SH/LH and 15SL/LL. Keep initial/equal cases accurate. Supersedes D-011 code-only text, retaining its toggle. Structural snapshot and audit outputs unchanged; platform validation pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

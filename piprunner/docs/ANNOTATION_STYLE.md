@@ -1,5 +1,9 @@
 # Multi timeframe annotation style
 
+## UI 0.8 combined swing and structure codes
+
+User requested slash notation, for example **4SH/HH**. Temporary swing names now include actual classification: 4SH/HH or 4SH/LH, 4SL/HL or 4SL/LL, and the corresponding 1SH/1SL and 15SH/15SL forms. Initial/equal references display H/L or EH/EL truthfully (for example 1SH/H or 15SL/EL). Do not invent a higher/lower relationship without evidence. Prices, status, colors and logic stay unchanged. The existing toggle still restores the previous timeframe/structure text when off. This supersedes UI 0.7's code-only display. TradingView checks for UI 0.8 remain pending.
+
 ## UI 0.7 temporary swing names
 
 CONFIRMED user request: label the current confirmed swing-high and swing-low levels **4SH / 4SL**, **1SH / 1SL**, **15SH / 15SL**. The new `Temporary swing names` input defaults on; disable it to restore HH/HL/LH/LL text. Actual structural comparisons remain available in level tooltips. Prices, protection/broken status, colors and large BOS/CHoCH labels remain unchanged. In these codes SL means Swing Low, not an order stop-loss.

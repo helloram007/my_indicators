@@ -19,6 +19,8 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 
 ## Current implementation status
 
+Latest display is **UI 0.8**: user requested slash classification, e.g. 4SH/HH. All current swing codes include actual HH/LH/HL/LL (or truthful initial/equal H/L/EH/EL). Legacy 4H origins follow the same convention. Temporary naming toggle is retained. This supersedes UI 0.7 code-only naming; calculation/audit outputs unchanged. TradingView visual/compile check remains pending.
+
 Latest presentation is **UI 0.7**, superseding UI 0.6 text below. User requested temporary exact current swing codes: 4SH/4SL, 1SH/1SL, 15SH/15SL. Toggle defaults on; off restores structure text. Tooltip retains HH/HL/LH/LL; existing colors, BOS/CHoCH size, timeframe availability and logic stay unchanged. SL here means Swing Low. See ANNOTATION_STYLE. Source-level snapshot/audit comparison passes; this revision's TradingView checks remain pending. No new trading predicates implemented.
 
 Latest source is **UI 0.6**, title Piprunner MTF Structure. Independent proposed 4H/1H/15m strict-pivot research structure layers are implemented. Colors: 4H teal/red, 1H blue/orange, 15m fuchsia/yellow; all configurable. Large BOS/CHoCH, horizontal current levels, bounded history and independent visibility remain. 1H is available on 1H/15m only; 15m on 15m only, avoiding collapsed lower-timeframe sampling. Full details: FIFTEEN_MINUTE_STRUCTURE.md and ONE_HOUR_STRUCTURE.md. These are not qualified End-of-P2 setup/entry predicates.

@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner MTF Structure • PROPOSED · UI 0.7", overlay = true, max_labels_count = 300, max_lines_count = 100, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 0.8", overlay = true, max_labels_count = 300, max_lines_count = 100, max_bars_back = 200)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -189,9 +189,9 @@ if visible and newSnapshot and drawingStyle == "Legacy labels"
     float lowerY = sourceLow - gap * (lane + 1)
     string timing = "\nOrigin UTC " + f_time(pivotOrigin) + "\nConfirmed UTC " + f_time(confirmedAt) + "\nPublished on chart UTC " + f_time(time)
     if training and showOrigins and not na(newHigh)
-        array.push(labels, label.new(pivotOrigin, newHigh + gap, (swingNames ? "4SH" : "4H " + highClass) + (detailed ? "\n" + f_price(newHigh) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_down, color = f_structure_color(highClass, true), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newHigh) + timing))
+        array.push(labels, label.new(pivotOrigin, newHigh + gap, (swingNames ? "4SH/" + highClass : "4H " + highClass) + (detailed ? "\n" + f_price(newHigh) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_down, color = f_structure_color(highClass, true), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newHigh) + timing))
     if training and showOrigins and not na(newLow)
-        array.push(labels, label.new(pivotOrigin, newLow - gap, (swingNames ? "4SL" : "4H " + lowClass) + (detailed ? "\n" + f_price(newLow) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_up, color = f_structure_color(lowClass, false), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newLow) + timing))
+        array.push(labels, label.new(pivotOrigin, newLow - gap, (swingNames ? "4SL/" + lowClass : "4H " + lowClass) + (detailed ? "\n" + f_price(newLow) + " | confirmed later" : ""), xloc = xloc.bar_time, style = label.style_label_up, color = f_structure_color(lowClass, false), textcolor = color.white, size = textSize, tooltip = "Pivot price " + f_price(newLow) + timing))
     if expanded and showConfirmations and (not na(newHigh) or not na(newLow))
         array.push(labels, label.new(time, not na(newHigh) ? upperY : lowerY, "4H " + (not na(newHigh) ? highClass : lowClass) + " CONFIRMED", xloc = xloc.bar_time, style = not na(newHigh) ? label.style_label_down : label.style_label_up, color = neutralColor, textcolor = color.white, size = textSize, tooltip = str.tostring(rightBars) + " right bars closed" + timing))
     if expanded and ((changed and showBiasEvents) or (invalidated and showInvalidations))
@@ -235,13 +235,13 @@ if barstate.islast
         bool isProtected = showProtection and protectedPrice == h1
         color c = f_structure_color(highName, true)
         highLine := line.new(ht, h1, endAt, h1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = highUsed ? line.style_dotted : line.style_solid)
-        highLabel := label.new(endAt, h1, (swingNames ? "4SH" : "4H " + highName) + " " + f_price(h1) + (isProtected ? " · protected" : highUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + highName + "; confirmed swing high, not a 1H/15m swing.\nOrigin UTC " + f_time(ht) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+        highLabel := label.new(endAt, h1, (swingNames ? "4SH/" + highName : "4H " + highName) + " " + f_price(h1) + (isProtected ? " · protected" : highUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + highName + "; confirmed swing high, not a 1H/15m swing.\nOrigin UTC " + f_time(ht) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
     if horizontal and showLevels and not na(l1) and not na(lt)
         string lowName = na(l0) ? "L" : l1 > l0 ? "HL" : l1 < l0 ? "LL" : "EL"
         bool isProtected = showProtection and protectedPrice == l1
         color c = f_structure_color(lowName, false)
         lowLine := line.new(lt, l1, endAt, l1, xloc = xloc.bar_time, color = c, width = isProtected ? 2 : levelWidth, style = lowUsed ? line.style_dotted : line.style_solid)
-        lowLabel := label.new(endAt, l1, (swingNames ? "4SL" : "4H " + lowName) + " " + f_price(l1) + (isProtected ? " · protected" : lowUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + lowName + "; confirmed swing low, not a 1H/15m swing.\nOrigin UTC " + f_time(lt) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
+        lowLabel := label.new(endAt, l1, (swingNames ? "4SL/" + lowName : "4H " + lowName) + " " + f_price(l1) + (isProtected ? " · protected" : lowUsed ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "4H " + lowName + "; confirmed swing low, not a 1H/15m swing.\nOrigin UTC " + f_time(lt) + "\nSolid = unbroken; dotted = consumed by confirmed close.")
     if horizontal and showProtection and not na(protectedPrice) and (not showLevels or (protectedPrice != h1 and protectedPrice != l1))
         protectionLine := line.new(confirmedAt, protectedPrice, endAt, protectedPrice, xloc = xloc.bar_time, color = biasColor, width = 2)
         protectionLabel := label.new(endAt, protectedPrice, "4H protected " + f_price(protectedPrice), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = biasColor, size = textSize)
@@ -296,12 +296,12 @@ if supports1H
             string name = na(hPrev1) ? "H" : hLast1 > hPrev1 ? "HH" : hLast1 < hPrev1 ? "LH" : "EH"
             color c = name == "HH" ? oneBull : name == "LH" ? oneBear : oneNeutral
             oneHighLine := line.new(hTime1, hLast1, end1, hLast1, xloc = xloc.bar_time, color = c, style = usedH1 ? line.style_dotted : line.style_solid, width = 1)
-            oneHighLabel := label.new(end1, hLast1, (swingNames ? "1SH" : "1H " + name) + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H " + name + "; setup still UNDEFINED\nOrigin UTC " + f_time(hTime1))
+            oneHighLabel := label.new(end1, hLast1, (swingNames ? "1SH/" + name : "1H " + name) + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H " + name + "; setup still UNDEFINED\nOrigin UTC " + f_time(hTime1))
         if oneVisible and oneLevels and not na(lLast1)
             string name = na(lPrev1) ? "L" : lLast1 > lPrev1 ? "HL" : lLast1 < lPrev1 ? "LL" : "EL"
             color c = name == "HL" ? oneBull : name == "LL" ? oneBear : oneNeutral
             oneLowLine := line.new(lTime1, lLast1, end1, lLast1, xloc = xloc.bar_time, color = c, style = usedL1 ? line.style_dotted : line.style_solid, width = 1)
-            oneLowLabel := label.new(end1, lLast1, (swingNames ? "1SL" : "1H " + name) + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H " + name + "; setup still UNDEFINED\nOrigin UTC " + f_time(lTime1))
+            oneLowLabel := label.new(end1, lLast1, (swingNames ? "1SL/" + name : "1H " + name) + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "1H " + name + "; setup still UNDEFINED\nOrigin UTC " + f_time(lTime1))
 
 plot(oneBias, "Audit 1H structure state", display = display.data_window)
 plot(oneProtection, "Audit 1H structural protection", display = display.data_window)
@@ -349,12 +349,12 @@ if supports15m
             string name = na(hPrev1) ? "H" : hLast1 > hPrev1 ? "HH" : hLast1 < hPrev1 ? "LH" : "EH"
             color c = name == "HH" ? fifteenBull : name == "LH" ? fifteenBear : fifteenNeutral
             fifteenHighLine := line.new(hTime1, hLast1, end1, hLast1, xloc = xloc.bar_time, color = c, style = usedH1 ? line.style_dotted : line.style_solid, width = 1)
-            fifteenHighLabel := label.new(end1, hLast1, (swingNames ? "15SH" : "15m " + name) + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m " + name + "; entry sequence still UNDEFINED\nOrigin UTC " + f_time(hTime1))
+            fifteenHighLabel := label.new(end1, hLast1, (swingNames ? "15SH/" + name : "15m " + name) + " " + f_price(hLast1) + (usedH1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m " + name + "; entry sequence still UNDEFINED\nOrigin UTC " + f_time(hTime1))
         if fifteenVisible and fifteenLevels and not na(lLast1)
             string name = na(lPrev1) ? "L" : lLast1 > lPrev1 ? "HL" : lLast1 < lPrev1 ? "LL" : "EL"
             color c = name == "HL" ? fifteenBull : name == "LL" ? fifteenBear : fifteenNeutral
             fifteenLowLine := line.new(lTime1, lLast1, end1, lLast1, xloc = xloc.bar_time, color = c, style = usedL1 ? line.style_dotted : line.style_solid, width = 1)
-            fifteenLowLabel := label.new(end1, lLast1, (swingNames ? "15SL" : "15m " + name) + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m " + name + "; entry sequence still UNDEFINED\nOrigin UTC " + f_time(lTime1))
+            fifteenLowLabel := label.new(end1, lLast1, (swingNames ? "15SL/" + name : "15m " + name) + " " + f_price(lLast1) + (usedL1 ? " · broken" : " · unbroken"), xloc = xloc.bar_time, style = label.style_label_left, color = color.new(color.black, 100), textcolor = c, size = textSize, tooltip = "15m " + name + "; entry sequence still UNDEFINED\nOrigin UTC " + f_time(lTime1))
 
 plot(fifteenBias, "Audit 15m structure state", display = display.data_window)
 plot(fifteenProtection, "Audit 15m structural protection", display = display.data_window)
@@ -370,7 +370,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 22)
     if mode != "Off" and showPanel
-        f_row(0, "4H · PROPOSED · UI 0.7", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 0.8", f_state(bias), biasColor)
         string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
         f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
         bool threeAligned = (bias == 1 or bias == -1) and oneBias == bias and fifteenBias == bias
