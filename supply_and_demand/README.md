@@ -30,6 +30,16 @@ The starting pivot setting is 2 left / 2 right candles for every timeframe; this
 
 You can configure pivot lengths separately in each consuming indicator without forking the algorithm. If testing supports different lengths, session filters, or instrument settings, record those as explicit per-timeframe profiles here. There are currently no validated timeframe-specific profiles. An indicator can request several independent timeframes by using separate consistent requests and inputs.
 
+## Swing lines: meaning and display
+
+Red identifies the latest confirmed HTF swing high; green identifies the latest confirmed HTF swing low. The engine compares completed closes with unbroken pivot levels to detect BOS or CHoCH. These references are not supply/demand zones, trade entries, or necessarily still-unbroken levels.
+
+**Swing level display** defaults to **Compact**: two short, thin dashed guides near the last chart candle, with price labels. This removes the historical staircase. Set line length, right offset, and price-label visibility under Swing levels. Increase the chart's right margin if labels are clipped.
+
+Choose **Hidden** for annotations and bias background without level lines, or **Full history** to restore the historical staircase for investigation. Display choices do not affect the library, bias, swing events, or alerts. High/low values remain available in the Data Window in every mode. Compact guides track the latest bar rather than a historical candle when scrolling backward; use Full history or Bar Replay for historical inspection.
+
+Visual acceptance: compare all three modes on the same chart and inputs. Events/bias must remain identical. Compact must retain no historical line trail; Hidden must show no swing-level guides or price labels. Confirm the right-edge labels follow the latest confirmed values and remain formatted to the symbol tick size. TradingView visual verification of this display change remains pending.
+
 ## Annotation placement and availability
 
 - HH/HL/LH/LL/EH/EL labels are anchored to the actual source pivot candle's timestamp and extreme, not the later confirmation candle. They are created only after the right-side source candles complete. Hover for the confirmation time.

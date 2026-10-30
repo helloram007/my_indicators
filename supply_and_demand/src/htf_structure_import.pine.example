@@ -9,6 +9,10 @@ int rightBars = input.int(2, "Swing confirmation bars (HTF candles)", minval = 1
 string htf = input.timeframe("240", "Structure HTF")
 bool showSwings = input.bool(true, "Show confirmed swing labels")
 bool showBackground = input.bool(true, "Show HTF bias background")
+string levelDisplay = input.string("Compact", "Swing level display", options = ["Compact", "Hidden", "Full history"], group = "Swing levels")
+int levelLength = input.int(8, "Compact line length (chart bars)", minval = 1, maxval = 100, group = "Swing levels")
+int levelOffset = input.int(3, "Right offset (chart bars)", minval = 1, maxval = 50, group = "Swing levels")
+bool showLevelPrices = input.bool(true, "Show compact price labels", group = "Swing levels")
 
 if not chart.is_standard or na(timeframe.in_seconds()) or timeframe.in_seconds(htf) < timeframe.in_seconds()
     runtime.error("Use standard time-based candles and select an HTF equal to or above the chart timeframe.")
@@ -25,8 +29,38 @@ if emit and showSwings
     if lowText != ""
         label.new(lowPivotTime, lastLow, htf + " " + lowText, xloc = xloc.bar_time, tooltip = "Pivot confirmed at source close: " + str.format_time(sourceClose), style = label.style_label_up, color = color.green, textcolor = color.white)
 
-plot(lastHigh, "HTF confirmed swing high", color = color.red, style = plot.style_stepline)
-plot(lastLow, "HTF confirmed swing low", color = color.green, style = plot.style_stepline)
+// Preserve values in Data Window without drawing a historical staircase by default.
+plot(levelDisplay == "Full history" ? lastHigh : na, "HTF swing high history", color = color.new(color.red, 35), style = plot.style_stepline)
+plot(lastHigh, "HTF confirmed swing high", display = display.data_window)
+plot(levelDisplay == "Full history" ? lastLow : na, "HTF swing low history", color = color.new(color.green, 35), style = plot.style_stepline)
+plot(lastLow, "HTF confirmed swing low", display = display.data_window)
+
+// Only two short current-level segments; never retain their historical trails.
+var line highGuide = na
+var line lowGuide = na
+var label highGuideLabel = na
+var label lowGuideLabel = na
+if barstate.islast
+    line.delete(highGuide)
+    line.delete(lowGuide)
+    label.delete(highGuideLabel)
+    label.delete(lowGuideLabel)
+    highGuide := na
+    lowGuide := na
+    highGuideLabel := na
+    lowGuideLabel := na
+    if levelDisplay == "Compact"
+        int endBar = bar_index + levelOffset
+        int startBar = math.max(0, endBar - levelLength)
+        string levelHelp = "Latest confirmed HTF pivot reference. It may already have been broken; this is not a fresh zone or an entry signal."
+        if not na(lastHigh)
+            highGuide := line.new(startBar, lastHigh, endBar, lastHigh, color = color.new(color.red, 25), style = line.style_dashed, width = 1)
+            if showLevelPrices
+                highGuideLabel := label.new(endBar, lastHigh, "Swing high " + str.tostring(lastHigh, format.mintick), style = label.style_label_left, color = color.new(color.red, 85), textcolor = color.red, size = size.small, tooltip = levelHelp)
+        if not na(lastLow)
+            lowGuide := line.new(startBar, lastLow, endBar, lastLow, color = color.new(color.green, 25), style = line.style_dashed, width = 1)
+            if showLevelPrices
+                lowGuideLabel := label.new(endBar, lastLow, "Swing low " + str.tostring(lastLow, format.mintick), style = label.style_label_left, color = color.new(color.green, 85), textcolor = color.green, size = size.small, tooltip = levelHelp)
 plot(bias, "HTF bias: bull 1 / bear -1 / transition 2 / neutral 0", display = display.data_window)
 plot(sourceClose, "Source confirmation close timestamp", display = display.data_window)
 color biasColor = bias == 1 ? color.green : bias == -1 ? color.red : bias == 2 ? color.orange : color.gray
