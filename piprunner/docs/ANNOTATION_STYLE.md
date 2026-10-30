@@ -1,5 +1,9 @@
 # Multi timeframe annotation style
 
+## UI 1.0.2 hide input values beside the title
+
+30 October 2026: user requested the Style setting `Inputs in status line` disabled by default. All Pine input calls now explicitly use `display = display.none`, hiding their values from title/status-line and input summaries in the Data Window while keeping every setting editable under Inputs. Indicator audit plots and chart objects are unchanged. Pine does not provide a setter for the existing indicator instance's global Style checkbox; do not promise its literal checked state changes. TradingView may preserve instance preferences. The source suppresses the values regardless. Reference: https://www.tradingview.com/pine-script-docs/concepts/inputs/#input-function-parameters.
+
 ## UI 0.9 provisional breach wording
 
 Protected 4H high/low text now reads `breached, await 4H close` when current chart price is beyond it. This is live explanatory text only; the confirmed state/protection and line geometry remain unchanged. If price returns within the level before confirmation, the text returns to `protected`. Equality is not a breach. Toggle `Explain live breach on protected 4H label` off to retain the older text. No historical wick-breach inference is made. Revised Pine compilation/visual checks remain pending.

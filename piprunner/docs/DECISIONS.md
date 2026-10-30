@@ -126,6 +126,10 @@ UI 1.0 adds fixed configurable base length, two directional departure candles, c
 
 Date: 30 October 2026. Implementation diagnostic, no strategy decision. UI 1.0.1 adds a near-header Data Window output and explicit end marker after user reported CE10213. UI 1.0 already contained outputs; root cause remains unverified without exact editor content. Structural/zone/SPA rules unchanged. See COMPILE_CHECKS. Exact-revision platform compilation remains pending.
 
+## D-022 Input values hidden from status line
+
+Date: 30 October 2026. CONFIRMED user presentation preference. UI 1.0.2 adds display.none to every input; values no longer clutter the status line and remain editable in Inputs. Pine cannot set the existing instance's global Style checkbox. Source reverse-transform verification confirms no logic/output changes. Platform validation pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
