@@ -130,6 +130,10 @@ Date: 30 October 2026. Implementation diagnostic, no strategy decision. UI 1.0.1
 
 Date: 30 October 2026. CONFIRMED user presentation preference. UI 1.0.2 adds display.none to every input; values no longer clutter the status line and remain editable in Inputs. Pine cannot set the existing instance's global Style checkbox. Source reverse-transform verification confirms no logic/output changes. Platform validation pending.
 
+## D-023 Full-source delivery diagnostic revision
+
+Date: 30 October 2026. User screenshot reveals only header diagnostic plot in Style and no graphic objects. Local full-source copies verified; exact editor content unknown. UI 1.0.3 relocates diagnostic output to the end and provides full downloadable source for clean replacement. This corrects the earlier diagnostic design that could let an incomplete header compile. No strategy-rule or calculation changes. Do not declare the user's source definitely truncated or the issue resolved before verification.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.
