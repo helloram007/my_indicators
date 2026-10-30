@@ -122,6 +122,10 @@ Status: implementation authorized by user; exact detector/strength defaults rema
 
 UI 1.0 adds fixed configurable base length, two directional departure candles, compactness/body/ATR tests, latest S/D per side/context and frozen 30% buffer with own-timeframe close invalidation. 1H completed-candle pin/engulf/piercing candidates require active known 4H/1H S/D and permitted 4H direction. Dark-cloud counterpart is off by default. Visibility does not affect calculation. S/R is explicitly unimplemented; no approved setup lifecycle, entries/orders or trade management added. See ZONES_SPA_IMPLEMENTATION for exact choices/limits. Thirty-two local oracle tests pass; structural snapshot/16 audit plots unchanged. Pine compilation and replay remain pending.
 
+## D-021 Missing-output report diagnostic release
+
+Date: 30 October 2026. Implementation diagnostic, no strategy decision. UI 1.0.1 adds a near-header Data Window output and explicit end marker after user reported CE10213. UI 1.0 already contained outputs; root cause remains unverified without exact editor content. Structural/zone/SPA rules unchanged. See COMPILE_CHECKS. Exact-revision platform compilation remains pending.
+
 ## Update format
 
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

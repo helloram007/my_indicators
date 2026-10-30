@@ -1,5 +1,7 @@
 //@version=6
-indicator("Piprunner MTF Structure • PROPOSED · UI 1.0", overlay = true, max_labels_count = 300, max_lines_count = 150, max_boxes_count = 30, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 1.0.1", overlay = true, max_labels_count = 300, max_lines_count = 150, max_boxes_count = 30, max_bars_back = 200)
+// Explicit output near the header; visible in Data Window only, never changes trading logic.
+plot(close, title = "Source diagnostic close", display = display.data_window)
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
 int leftBars = input.int(2, "4H pivot left bars", minval = 1, maxval = 20, group = "Structure — changes logic")
@@ -611,7 +613,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 22)
     if mode != "Off" and showPanel
-        f_row(0, "4H · PROPOSED · UI 1.0", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 1.0.1", f_state(bias), biasColor)
         string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
         f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
         bool threeAligned = (bias == 1 or bias == -1) and oneBias == bias and fifteenBias == bias
@@ -662,3 +664,4 @@ if barstate.islast
         table.cell(setupPanel,1,1,not supports1H ? "View 1H/15m" : spaCandidate != 0 ? "Candidate: " + spaPatterns : "No HTF-aligned S/D SPA",text_color=color.white,bgcolor=color.black,text_size=textSize)
         table.cell(setupPanel,0,2,"Remaining gates",text_color=color.white,bgcolor=color.black,text_size=textSize)
         table.cell(setupPanel,1,2,"S/R branch + 15m entry sequence pending",text_color=color.white,bgcolor=color.black,text_size=textSize)
+// END OF COMPLETE PIPRUNNER SCRIPT UI 1.0.1
