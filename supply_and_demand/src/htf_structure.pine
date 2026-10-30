@@ -1,0 +1,93 @@
+//@version=6
+indicator("Supply & Demand - Phase 1: 4H Structure", overlay = true, max_labels_count = 500)
+
+int leftBars = input.int(2, "Swing left bars", minval = 1, maxval = 20)
+int rightBars = input.int(2, "Swing confirmation bars", minval = 1, maxval = 20)
+bool showSwings = input.bool(true, "Show swings at confirmation time")
+bool showBackground = input.bool(true, "Show bias background")
+
+if timeframe.in_seconds() != 14400 or not chart.is_standard
+    runtime.error("Use a standard 4-hour candle chart for this Phase 1 indicator.")
+
+float pivotHigh = ta.pivothigh(high, leftBars, rightBars)
+float pivotLow = ta.pivotlow(low, leftBars, rightBars)
+var float lastHigh = na
+var float lastLow = na
+var int highDirection = 0
+var int lowDirection = 0
+var int highConfirmedAt = na
+var int lowConfirmedAt = na
+var bool highBroken = false
+var bool lowBroken = false
+// Bias: 0 neutral, 1 bullish, -1 bearish, 2 transitional.
+var int bias = 0
+var int transitionAt = na
+bool bullishBos = false
+bool bearishBos = false
+bool bullishChoch = false
+bool bearishChoch = false
+
+if barstate.isconfirmed
+    // Break existing levels before installing newly confirmed pivots.
+    bool breakUp = not na(lastHigh) and not highBroken and close > lastHigh
+    bool breakDown = not na(lastLow) and not lowBroken and close < lastLow
+    // Inverted levels are ambiguous; consume them without emitting direction.
+    if breakUp and breakDown
+        highBroken := true
+        lowBroken := true
+        bias := 2
+        transitionAt := bar_index
+    else if breakUp
+        highBroken := true
+        bullishBos := bias == 1
+        bullishChoch := bias == -1
+        if bullishChoch
+            bias := 2
+            transitionAt := bar_index
+    else if breakDown
+        lowBroken := true
+        bearishBos := bias == -1
+        bearishChoch := bias == 1
+        if bearishChoch
+            bias := 2
+            transitionAt := bar_index
+
+    bool newHigh = not na(pivotHigh)
+    bool newLow = not na(pivotLow)
+    if newHigh
+        highDirection := na(lastHigh) ? 0 : pivotHigh > lastHigh ? 1 : pivotHigh < lastHigh ? -1 : 0
+        string highText = na(lastHigh) ? "H" : highDirection == 1 ? "HH" : highDirection == -1 ? "LH" : "EH"
+        lastHigh := pivotHigh
+        highConfirmedAt := bar_index
+        highBroken := close > pivotHigh
+        if showSwings
+            label.new(bar_index, high, highText, style = label.style_label_down, color = color.new(color.red, 25), textcolor = color.white)
+    if newLow
+        lowDirection := na(lastLow) ? 0 : pivotLow > lastLow ? 1 : pivotLow < lastLow ? -1 : 0
+        string lowText = na(lastLow) ? "L" : lowDirection == 1 ? "HL" : lowDirection == -1 ? "LL" : "EL"
+        lastLow := pivotLow
+        lowConfirmedAt := bar_index
+        lowBroken := close < pivotLow
+        if showSwings
+            label.new(bar_index, low, lowText, style = label.style_label_up, color = color.new(color.green, 25), textcolor = color.white)
+
+    bool mayResolve = bias != 2 or (not na(transitionAt) and highConfirmedAt > transitionAt and lowConfirmedAt > transitionAt)
+    if (newHigh or newLow) and mayResolve and not bullishChoch and not bearishChoch
+        if highDirection == 1 and lowDirection == 1 and not lowBroken
+            bias := 1
+        else if highDirection == -1 and lowDirection == -1 and not highBroken
+            bias := -1
+        else if bias == 0
+            bias := 0
+
+plot(lastHigh, "Latest confirmed swing high", color = color.red, style = plot.style_stepline)
+plot(lastLow, "Latest confirmed swing low", color = color.green, style = plot.style_stepline)
+plot(bias, "Bias: bull 1 / bear -1 / transition 2 / neutral 0", display = display.data_window)
+color biasColor = bias == 1 ? color.green : bias == -1 ? color.red : bias == 2 ? color.orange : color.gray
+bgcolor(showBackground ? color.new(biasColor, 92) : na)
+plotshape(bullishBos, "Bullish BOS", shape.labelup, location.belowbar, color.green, text = "BOS", textcolor = color.white)
+plotshape(bearishBos, "Bearish BOS", shape.labeldown, location.abovebar, color.red, text = "BOS", textcolor = color.white)
+plotshape(bullishChoch, "Bullish CHoCH", shape.labelup, location.belowbar, color.orange, text = "CHoCH", textcolor = color.white)
+plotshape(bearishChoch, "Bearish CHoCH", shape.labeldown, location.abovebar, color.orange, text = "CHoCH", textcolor = color.white)
+alertcondition(bullishBos or bearishBos, "Confirmed 4H BOS", "4H continuation structure break confirmed.")
+alertcondition(bullishChoch or bearishChoch, "Confirmed 4H CHoCH", "4H opposing structure break confirmed; bias is transitional.")
