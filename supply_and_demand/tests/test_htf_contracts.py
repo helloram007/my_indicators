@@ -26,6 +26,14 @@ class HTFContracts(unittest.TestCase):
         self.assertNotIn('label.new(bar_index', view)
         self.assertNotIn('plotshape(', view)
 
+    def test_completed_snapshot_labels_do_not_wait_for_receiving_close(self):
+        view = (ROOT/'src/htf_structure_view.pine.inc').read_text(encoding='utf-8')
+        self.assertIn('bool drawSnapshot = newSnapshot', view)
+        self.assertIn('if drawSnapshot and showSwings', view)
+        self.assertIn('if drawSnapshot\n    if bullishBos', view)
+        self.assertIn('bool emit = newSnapshot and barstate.isconfirmed', view)
+        self.assertEqual(view.count('alertcondition(emit and'), 2)
+
     def test_pivot_time_is_taken_from_pivot_not_confirmation_bar(self):
         source = (ROOT/'src/HTFStructure.pine').read_text(encoding='utf-8')
         self.assertIn('highPivotTime := time[rightBars]', source)

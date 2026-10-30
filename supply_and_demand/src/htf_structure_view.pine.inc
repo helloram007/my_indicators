@@ -1,5 +1,5 @@
 int leftBars = input.int(2, "Swing left bars (HTF candles)", minval = 1, maxval = 20)
-int rightBars = input.int(2, "Swing confirmation bars (HTF candles)", minval = 1, maxval = 20)
+int rightBars = input.int(2, "Swing confirmation bars (HTF candles)", minval = 1, maxval = 20, tooltip = "A high must remain a pivot through this many following source candles. Use 1 to include smaller one-candle pullbacks; 2 filters them out if the second candle exceeds the high. Highs and lows qualify independently. Changing this setting also changes structure and bias.")
 string htf = input.timeframe("240", "Structure HTF")
 bool showSwings = input.bool(true, "Show confirmed swing labels")
 bool showBackground = input.bool(true, "Show HTF bias background")
@@ -15,9 +15,12 @@ if not chart.is_standard or na(timeframe.in_seconds()) or timeframe.in_seconds(h
 // This same policy is used on equal-timeframe charts for consistent timing.
 [lastHigh, lastLow, bias, bullishBos, bearishBos, bullishChoch, bearishChoch, highText, lowText, sourceOpen, sourceClose, highPivotTime, lowPivotTime, sourceHigh, sourceLow] = request.security(syminfo.tickerid, htf, confirmed(leftBars, rightBars), gaps = barmerge.gaps_off, lookahead = barmerge.lookahead_on)
 bool newSnapshot = not na(sourceOpen) and not na(sourceOpen[1]) and sourceOpen != sourceOpen[1]
-// Emit once on the first CLOSED chart bar receiving the completed HTF snapshot.
+// The source snapshot is already closed: draw its labels as soon as it arrives.
+// Pine rollback recreates these drawings during the receiving realtime bar.
+// Alerts still wait for the receiving chart candle to close.
+bool drawSnapshot = newSnapshot
 bool emit = newSnapshot and barstate.isconfirmed
-if emit and showSwings
+if drawSnapshot and showSwings
     if highText != ""
         label.new(highPivotTime, lastHigh, htf + " " + highText, xloc = xloc.bar_time, tooltip = "Pivot confirmed at source close: " + str.format_time(sourceClose), style = label.style_label_down, color = color.red, textcolor = color.white)
     if lowText != ""
@@ -59,8 +62,8 @@ plot(bias, "HTF bias: bull 1 / bear -1 / transition 2 / neutral 0", display = di
 plot(sourceClose, "Source confirmation close timestamp", display = display.data_window)
 color biasColor = bias == 1 ? color.green : bias == -1 ? color.red : bias == 2 ? color.orange : color.gray
 bgcolor(showBackground and not na(bias) ? color.new(biasColor, 92) : na)
-// Historical placement identifies the source candle; alerts still fire at delivery time.
-if emit
+// Historical placement identifies the source candle; alerts still wait for chart close.
+if drawSnapshot
     if bullishBos or bullishChoch
         label.new(sourceOpen, sourceLow, htf + (bullishBos ? " BOS" : " CHoCH"), xloc = xloc.bar_time, style = label.style_label_up, color = bullishBos ? color.green : color.orange, textcolor = color.white, tooltip = "Break confirmed at source close: " + str.format_time(sourceClose))
     if bearishBos or bearishChoch

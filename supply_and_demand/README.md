@@ -30,6 +30,18 @@ The starting pivot setting is 2 left / 2 right candles for every timeframe; this
 
 You can configure pivot lengths separately in each consuming indicator without forking the algorithm. If testing supports different lengths, session filters, or instrument settings, record those as explicit per-timeframe profiles here. There are currently no validated timeframe-specific profiles. An indicator can request several independent timeframes by using separate consistent requests and inputs.
 
+## Why an apparent swing may have no HH or LL label
+
+A higher traded price is not automatically a confirmed HH pivot. With 2 right confirmation bars, a candidate high must satisfy the pivot-high test over both following source candles. If price pulls back for one candle and then exceeds the candidate high on the second candle, the earlier high is not confirmed and has no HH label. The next confirmed pivot high is compared with the previous confirmed pivot high to choose HH/LH/EH.
+
+Highs and lows are detected independently. A low can qualify as HL even when the preceding small high does not qualify. The engine does not force alternating high/low labels or insert a synthetic HH to complete a visual sequence.
+
+To capture smaller one-candle pullbacks, set **Swing confirmation bars (HTF candles)** to **1**. This is a configurable sensitivity choice, not a missing-label repair. Keep left bars at 2 initially if only reducing the right-side requirement. Such changes also affect bias, levels and structural breaks. Defaults remain 2/2. Do not label an unconfirmed high as a confirmed HH.
+
+Completed HTF level values and pivot annotations now become visible on the same receiving update. This corrects the previous realtime mismatch where a guide showed a newly confirmed high but its annotation waited until the receiving chart candle closed. Labels may be redrawn during that candle under Pine rollback; no unclosed source candles are consumed. Alerts retain their chart-close timing.
+
+Replay checks: find a candidate high followed by a lower high and then a higher high. It must not qualify with right=2; it can qualify with right=1 if the left-side pivot conditions also hold. Test the mirrored low case. On a live receiving candle, verify a newly delivered source pivot label appears with its level, without duplicate labels after the receiving candle closes or the script reloads.
+
 ## Swing lines: meaning and display
 
 Red identifies the latest confirmed HTF swing high; green identifies the latest confirmed HTF swing low. The engine compares completed closes with unbroken pivot levels to detect BOS or CHoCH. These references are not supply/demand zones, trade entries, or necessarily still-unbroken levels.
@@ -46,7 +58,7 @@ Visual acceptance: compare all three modes on the same chart and inputs. Events/
 - BOS/CHoCH labels are anchored to the source candle whose close broke the level, not the later receiving chart candle.
 - Both use source timestamps with `xloc.bar_time`. For an HTF pivot on a lower chart, the label identifies the HTF candle's opening time, not necessarily the exact lower-timeframe candle within it that made the extreme.
 - These historical annotations must not be interpreted as signals available on the pivot candle. Bias and step lines are not shifted backward.
-- Completed snapshots arrive at the start of the next source period. This policy also applies when chart and HTF match, so the display uses the prior completed candle. Event labels/alerts are emitted on the close of the first receiving chart candle. On equal timeframes that means one chart candle later; the historical label still identifies the correct source candle.
+- Completed snapshots arrive at the start of the next source period. This policy also applies when chart and HTF match, so the display uses the prior completed candle. Labels are drawn as soon as a completed source snapshot arrives, including on the opening update of the receiving chart candle. Alerts wait until that receiving candle closes. On equal timeframes, labels therefore appear at the next source candle opening, while alerts arrive at its close; both identify the correct historical source candle.
 - A changing source-open timestamp deduplicates events across lower-timeframe bars. The first loaded snapshot is not treated as a new event. Missing market bars may delay delivery.
 - Only the most recent 500 labels are retained. Standard exchange/session time boundaries determine source candles.
 
@@ -56,6 +68,6 @@ The library is the canonical calculation source. Edit it and `src/htf_structure_
 
 Run `python -m unittest discover -s supply_and_demand/tests`. These source-contract tests check generation and timestamp/offset wiring; they are not a Pine compiler or market simulation.
 
-TradingView compilation and Bar Replay verification remain pending. Validate the standalone version and published import version on 1M, 1W, 1D, 240, and 60; compare identical source candles across chart timeframes with matching history/session settings. Confirm labels land on pivot/break candles while alerts occur only at delivery time, with no duplicates across lower-timeframe bars. Reload to compare closed-bar results. The engine is a local-pivot interpretation, not a protected-swing/external structure model or a proven trading edge.
+TradingView compilation and Bar Replay verification remain pending. Validate the standalone version and published import version on 1M, 1W, 1D, 240, and 60; compare identical source candles across chart timeframes with matching history/session settings. Confirm labels land on pivot/break candles while alerts occur only at the receiving candle close, with no duplicates across lower-timeframe bars. Reload to compare closed-bar results. The engine is a local-pivot interpretation, not a protected-swing/external structure model or a proven trading edge.
 
 References: [TradingView libraries](https://www.tradingview.com/pine-script-docs/concepts/libraries/) and [confirmed HTF requests](https://www.tradingview.com/pine-script-docs/concepts/other-timeframes-and-data/).
