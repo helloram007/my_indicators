@@ -1,5 +1,9 @@
 # Pine compiler reports
 
+## 5 November 2026 annotations restored — UI 1.1.0
+
+Direct TradingView Desktop inspection: all three EURCHF charts displayed EMAs without annotations. First instance Inputs had Training, show4H and showPanel enabled. Style listed EMA8/20/36/50/100 only, no graphic objects. Pine Editor ended at line 128, EMA200 width declaration. Complete repository source was pasted through native UI, final UI 1.1.0 marker verified at line714, and Update on chart applied. After compilation all three charts visibly rendered swing lines, BOS/CHoCH, S/D zones, checklist/setup tables and EMAs including green200. Editor closed; chart layout left open. No source logic modified. Local evidence: outputs/annotations_restored.png (ignored). Exact-revision compilation/basic visual rendering now observed; replay, reload stability, control matrix and numerical parity remain pending. This evidence does not retroactively prove the cause of October reports.
+
 ## 30 October 2026 only diagnostic plot visible
 
 User screenshot of UI 1.0.2 Style tab contains only Source diagnostic close, with no audit plots or graphic-object controls. This is inconsistent with the full delivered source, which has 21 top-level plots and object drawings. Local .pine, .txt and repository copies were checked as complete and identical. Incomplete pasted/compiled source or a stale/different chart instance is strongly suspected but not proven without the exact editor contents. Do not tell the user to keep changing visibility settings as the primary remedy.

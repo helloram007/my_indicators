@@ -57,6 +57,7 @@ Checked items represent delivered work, not approval of proposed trading rules.
 - [ ] Add optional EMA and fractal modules independently.
 - [x] UI 1.1.0 visual-only configurable EMA overlays 8/20/36/50/100/200, requested colors and dotted 36; filtering remains separate.
 - [ ] Compile/visually check UI 1.1.0 EMA colors, dotted style, lengths, source and visibility in TradingView.
+- [x] UI 1.1.0 compiled/rendered on EURCHF 4H/1H/15m, 5 November: restored complete source after observed line128 truncation; annotations and six EMAs visible. Full control matrix/replay remains pending.
 - [ ] Complete A01–A07 annotation acceptance tests as features become available.
 - [ ] Run chronological backtests with declared costs and untouched evaluation data.
 - [ ] Complete paper forward validation before considering live execution.
