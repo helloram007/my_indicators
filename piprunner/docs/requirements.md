@@ -1,4 +1,6 @@
 # Piprunner and End of P2
+
+> Product-scope update, 5 November 2026: this is the historical detailed design. Start with INDICATOR_SPLIT.md and the two named product requirement documents. MTA-End-of-P2 excludes a mandatory Piprunner fractal gate; Piprunner + MTA-End-of-P2 adds it while preserving all baseline stages. Later decisions supersede earlier open role/platform/invalidation statements here.
 Strategy Requirements and Design Document
 Version 0.2 | 29 October 2026 | Requirements baseline and proposed implementation design
 

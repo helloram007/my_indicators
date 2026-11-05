@@ -1,0 +1,5 @@
+interface:
+  display_name: Piprunner + MTA-End-of-P2
+  short_description: End-of-P2 plus confirmed 15m fractal qualification
+  default_prompt: Use $piprunner-mta-end-of-p2 to read current project context and
+    continue the next agreed feature for Piprunner + MTA-End-of-P2.

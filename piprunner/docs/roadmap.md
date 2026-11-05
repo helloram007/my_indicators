@@ -2,6 +2,12 @@
 
 Checked items represent delivered work, not approval of proposed trading rules.
 
+- [x] Split requirements into MTA-End-of-P2 and Piprunner + MTA-End-of-P2; confirm additional fractal gate preserves the full baseline.
+- [x] Write independent skills and horizontal/vertical browser workflow design dashboard; verify product counts, layouts and selected-step details.
+- [ ] Create and validate two independently named Pine indicator entrypoints from unchanged shared prototype calculations.
+- [ ] Implement TradingView horizontal/vertical panels with connected per-step states; HTML preview is design only.
+- [ ] Resolve combined fractal gate timing/age/expiry policy; role as an additional gate is now confirmed (D-026).
+
 - [x] Create/install reusable piprunner-end-of-p2 skill and detailed local usage guide; record original 15m Williams Fractal continuation signal as missing.
 - [ ] Specify role, equality/ordering, setup linkage and lifecycle for the missing 15m Williams Fractal continuation signal, then implement/test it separately from generic structural pivots.
 

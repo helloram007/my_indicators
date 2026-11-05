@@ -1,5 +1,9 @@
 # Decision log
 
+## D-026 Two products, independent skills and workflow dashboards
+
+Date: 5 November 2026. CONFIRMED user request: separate requirements into MTA-End-of-P2 and Piprunner + MTA-End-of-P2; write a skill for each and horizontal/vertical HTF-to-LTF workflow dashboards. Follow-up answer CONFIRMED: combined product adds Williams Fractal confirmation while retaining the full End-of-P2 entry sequence. Supersedes the earlier OPEN choice of the fractal module's role; exact confirmation placement, candidate age and expiry interaction are still OPEN. Neither product adopts original Piprunner pip entry/opposite-fractal stop/1R exits. Delivered separate requirements, shared contract, two portable skills, legacy compatibility router and standalone HTML design dashboard. No Pine modification or claim that the separate runnable indicators/TV panels exist. See INDICATOR_SPLIT.md and DASHBOARD_WORKFLOW.md.
+
 ## D-025 Reusable skill and missing fractal signal clarification
 
 Date: 5 November 2026. CONFIRMED user request: create a strategy skill and detailed local usage notes. User reiterates original Piprunner uses Williams Fractals for a 15m signal, not yet implemented. Existing 15m research structure is not that signal. Added `skills/piprunner-end-of-p2/` with portable source-pattern rules and unresolved implementation choices; installed user-local copy; guide in `docs/SKILL_LOCAL_GUIDE.md`. Does not authorize silently replacing the End-of-P2 entry or implementing unresolved predicates. No Pine changes. Original Piprunner comparator and optional hybrid gates remain distinct.

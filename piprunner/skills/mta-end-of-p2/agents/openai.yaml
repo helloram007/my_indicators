@@ -1,0 +1,5 @@
+interface:
+  display_name: MTA-End-of-P2
+  short_description: Standalone End-of-P2 multi-timeframe workflow
+  default_prompt: Use $mta-end-of-p2 to read current project context and continue
+    the next agreed feature for MTA-End-of-P2.
