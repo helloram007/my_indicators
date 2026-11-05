@@ -2,6 +2,9 @@
 
 Checked items represent delivered work, not approval of proposed trading rules.
 
+- [x] UI 1.2.0 groups timeframe settings and supports native-timeframe-only or manually selected display layers. Local reference suite passed (32).
+- [ ] Compile UI 1.2.0 in TradingView and verify layer selection, zones, SPA labels and checklist on 4H/1H/15m.
+
 - [x] Split requirements into MTA-End-of-P2 and Piprunner + MTA-End-of-P2; confirm additional fractal gate preserves the full baseline.
 - [x] Write independent skills and horizontal/vertical browser workflow design dashboard; verify product counts, layouts and selected-step details.
 - [ ] Create and validate two independently named Pine indicator entrypoints from unchanged shared prototype calculations.

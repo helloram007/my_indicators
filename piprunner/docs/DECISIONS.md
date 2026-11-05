@@ -1,5 +1,9 @@
 # Decision log
 
+## D-027 Timeframe groups and layer visibility
+
+5 November 2026. User requested grouped timeframe inputs and single-timeframe display with individual layer switches. UI 1.2.0 defaults to manual selection with existing layers enabled. Chart timeframe only intersects the selected layer with the chart interval. Shared zone inputs, checklist and EMA overlays are separate. This is a display control. Existing audit outputs and source requests were checked against UI 1.1.0. Local reference tests passed (32). TradingView compilation and visual checks are pending.
+
 ## D-026 Two products, independent skills and workflow dashboards
 
 Date: 5 November 2026. CONFIRMED user request: separate requirements into MTA-End-of-P2 and Piprunner + MTA-End-of-P2; write a skill for each and horizontal/vertical HTF-to-LTF workflow dashboards. Follow-up answer CONFIRMED: combined product adds Williams Fractal confirmation while retaining the full End-of-P2 entry sequence. Supersedes the earlier OPEN choice of the fractal module's role; exact confirmation placement, candidate age and expiry interaction are still OPEN. Neither product adopts original Piprunner pip entry/opposite-fractal stop/1R exits. Delivered separate requirements, shared contract, two portable skills, legacy compatibility router and standalone HTML design dashboard. No Pine modification or claim that the separate runnable indicators/TV panels exist. See INDICATOR_SPLIT.md and DASHBOARD_WORKFLOW.md.
