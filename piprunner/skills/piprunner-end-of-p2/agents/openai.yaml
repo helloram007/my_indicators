@@ -1,0 +1,4 @@
+interface:
+  display_name: "Piprunner + End of P2"
+  short_description: "Build and review your multi-timeframe trading strategy"
+  default_prompt: "Use $piprunner-end-of-p2 to read the current project context and continue the next agreed strategy feature."

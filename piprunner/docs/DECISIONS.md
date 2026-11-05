@@ -1,5 +1,9 @@
 # Decision log
 
+## D-025 Reusable skill and missing fractal signal clarification
+
+Date: 5 November 2026. CONFIRMED user request: create a strategy skill and detailed local usage notes. User reiterates original Piprunner uses Williams Fractals for a 15m signal, not yet implemented. Existing 15m research structure is not that signal. Added `skills/piprunner-end-of-p2/` with portable source-pattern rules and unresolved implementation choices; installed user-local copy; guide in `docs/SKILL_LOCAL_GUIDE.md`. Does not authorize silently replacing the End-of-P2 entry or implementing unresolved predicates. No Pine changes. Original Piprunner comparator and optional hybrid gates remain distinct.
+
 Use CONFIRMED for explicit user requirements, PROPOSED for implementation candidates and OPEN for unresolved choices. Tests establish code behavior, not user approval of trading rules.
 
 ## D-001 Target platform

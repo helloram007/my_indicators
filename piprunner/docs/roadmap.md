@@ -2,6 +2,9 @@
 
 Checked items represent delivered work, not approval of proposed trading rules.
 
+- [x] Create/install reusable piprunner-end-of-p2 skill and detailed local usage guide; record original 15m Williams Fractal continuation signal as missing.
+- [ ] Specify role, equality/ordering, setup linkage and lifecycle for the missing 15m Williams Fractal continuation signal, then implement/test it separately from generic structural pivots.
+
 - [x] Create the `piprunner` project directory.
 - [x] Record requirements, confirmed invariants and open decisions.
 - [x] Specify configurable learning annotations AN01–AN18.
