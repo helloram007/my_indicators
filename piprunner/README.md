@@ -4,6 +4,8 @@ Development home for the multi-timeframe strategy. All strategy-specific code, t
 
 ## Design
 
+- [Current UI 1.1.0 configurable EMA overlays](docs/EMA_OVERLAYS.md)
+
 - [Start here for project context](docs/PROJECT_CONTEXT.md)
 - [Confirmed decisions and proposals](docs/DECISIONS.md)
 - [Requirements and design](docs/requirements.md)

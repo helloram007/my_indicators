@@ -136,4 +136,10 @@ Date: 30 October 2026. User screenshot reveals only header diagnostic plot in St
 
 ## Update format
 
+## D-024 Six configurable EMA overlays
+
+Date: 5 November 2026. CONFIRMED user display request, implemented UI 1.1.0. Defaults: 8 yellow, 20 blue, 36 dotted blue, 50 red, 100 amber, 200 green. Each has configurable length, color, width, line style and visibility; shared source defaults close and master visibility defaults on. All calculate on chart timeframe and are independent of structural/setup decisions and optional EMA strategy filters. Source checks confirm six calls, defaults, 27 plot outputs and exact recovery of prior code when the new block/version are removed. TradingView checks pending. See EMA_OVERLAYS.md.
+
+## Update format
+
 For future decisions include date, source of authorization, status, exact choice, superseded requirement/decision, affected files/tests and remaining questions. Preserve prior entries; supersede explicitly instead of erasing the history.

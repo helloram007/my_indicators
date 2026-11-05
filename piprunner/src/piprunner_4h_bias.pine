@@ -1,5 +1,5 @@
 //@version=6
-indicator("Piprunner MTF Structure • PROPOSED · UI 1.0.3", overlay = true, max_labels_count = 300, max_lines_count = 150, max_boxes_count = 30, max_bars_back = 200)
+indicator("Piprunner MTF Structure • PROPOSED · UI 1.1.0", overlay = true, max_labels_count = 300, max_lines_count = 150, max_boxes_count = 30, max_bars_back = 200)
 // Copy the COMPLETE file, including the final end marker. A header-only copy is not the indicator.
 
 // Research indicator only. See docs/requirements.md Sections 3–5 and docs/4H_BIAS.md.
@@ -83,6 +83,53 @@ bool piercingGap = input.bool(false,"Require strict piercing / dark-cloud gap",g
 bool contactPrevious = input.bool(true,"Two-candle pattern: allow prior candle zone contact",group="1H SPA — proposed", display = display.none)
 bool spaShow = input.bool(true,"Show 1H SPA research candidates",group="SPA display only", display = display.none)
 int spaHistory = input.int(10,"Retained SPA labels",minval=1,maxval=30,group="SPA display only", display = display.none)
+
+// BEGIN CONFIGURABLE EMA OVERLAYS — chart timeframe, visual only.
+bool emaShowAll = input.bool(true, "Show EMA overlays", group = "EMA overlays", display = display.none)
+float emaSource = input.source(close, "EMA source", group = "EMA overlays", display = display.none)
+bool ema8Show = input.bool(true, "Show", group = "EMA 8 — configurable", display = display.none)
+int ema8Length = input.int(8, "Length", minval = 1, maxval = 5000, group = "EMA 8 — configurable", display = display.none)
+color ema8Color = input.color(color.yellow, "Color", group = "EMA 8 — configurable", display = display.none)
+int ema8Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 8 — configurable", display = display.none)
+string ema8Style = input.string("Solid", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 8 — configurable", display = display.none)
+float ema8Value = ta.ema(emaSource, ema8Length)
+plot(emaShowAll and ema8Show ? ema8Value : na, title = "EMA 8 (configurable)", color = ema8Color, linewidth = ema8Width, linestyle = ema8Style == "Dotted" ? plot.linestyle_dotted : ema8Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+bool ema20Show = input.bool(true, "Show", group = "EMA 20 — configurable", display = display.none)
+int ema20Length = input.int(20, "Length", minval = 1, maxval = 5000, group = "EMA 20 — configurable", display = display.none)
+color ema20Color = input.color(color.blue, "Color", group = "EMA 20 — configurable", display = display.none)
+int ema20Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 20 — configurable", display = display.none)
+string ema20Style = input.string("Solid", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 20 — configurable", display = display.none)
+float ema20Value = ta.ema(emaSource, ema20Length)
+plot(emaShowAll and ema20Show ? ema20Value : na, title = "EMA 20 (configurable)", color = ema20Color, linewidth = ema20Width, linestyle = ema20Style == "Dotted" ? plot.linestyle_dotted : ema20Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+bool ema36Show = input.bool(true, "Show", group = "EMA 36 — configurable", display = display.none)
+int ema36Length = input.int(36, "Length", minval = 1, maxval = 5000, group = "EMA 36 — configurable", display = display.none)
+color ema36Color = input.color(color.blue, "Color", group = "EMA 36 — configurable", display = display.none)
+int ema36Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 36 — configurable", display = display.none)
+string ema36Style = input.string("Dotted", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 36 — configurable", display = display.none)
+float ema36Value = ta.ema(emaSource, ema36Length)
+plot(emaShowAll and ema36Show ? ema36Value : na, title = "EMA 36 (configurable)", color = ema36Color, linewidth = ema36Width, linestyle = ema36Style == "Dotted" ? plot.linestyle_dotted : ema36Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+bool ema50Show = input.bool(true, "Show", group = "EMA 50 — configurable", display = display.none)
+int ema50Length = input.int(50, "Length", minval = 1, maxval = 5000, group = "EMA 50 — configurable", display = display.none)
+color ema50Color = input.color(color.red, "Color", group = "EMA 50 — configurable", display = display.none)
+int ema50Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 50 — configurable", display = display.none)
+string ema50Style = input.string("Solid", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 50 — configurable", display = display.none)
+float ema50Value = ta.ema(emaSource, ema50Length)
+plot(emaShowAll and ema50Show ? ema50Value : na, title = "EMA 50 (configurable)", color = ema50Color, linewidth = ema50Width, linestyle = ema50Style == "Dotted" ? plot.linestyle_dotted : ema50Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+bool ema100Show = input.bool(true, "Show", group = "EMA 100 — configurable", display = display.none)
+int ema100Length = input.int(100, "Length", minval = 1, maxval = 5000, group = "EMA 100 — configurable", display = display.none)
+color ema100Color = input.color(#FFBF00, "Color", group = "EMA 100 — configurable", display = display.none)
+int ema100Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 100 — configurable", display = display.none)
+string ema100Style = input.string("Solid", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 100 — configurable", display = display.none)
+float ema100Value = ta.ema(emaSource, ema100Length)
+plot(emaShowAll and ema100Show ? ema100Value : na, title = "EMA 100 (configurable)", color = ema100Color, linewidth = ema100Width, linestyle = ema100Style == "Dotted" ? plot.linestyle_dotted : ema100Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+bool ema200Show = input.bool(true, "Show", group = "EMA 200 — configurable", display = display.none)
+int ema200Length = input.int(200, "Length", minval = 1, maxval = 5000, group = "EMA 200 — configurable", display = display.none)
+color ema200Color = input.color(color.green, "Color", group = "EMA 200 — configurable", display = display.none)
+int ema200Width = input.int(1, "Line width", minval = 1, maxval = 4, group = "EMA 200 — configurable", display = display.none)
+string ema200Style = input.string("Solid", "Line style", options = ["Solid", "Dotted", "Dashed"], group = "EMA 200 — configurable", display = display.none)
+float ema200Value = ta.ema(emaSource, ema200Length)
+plot(emaShowAll and ema200Show ? ema200Value : na, title = "EMA 200 (configurable)", color = ema200Color, linewidth = ema200Width, linestyle = ema200Style == "Dotted" ? plot.linestyle_dotted : ema200Style == "Dashed" ? plot.linestyle_dashed : plot.linestyle_solid, display = display.pane + display.data_window)
+// END CONFIGURABLE EMA OVERLAYS
 
 if not (timeframe.isminutes and (timeframe.multiplier == 15 or timeframe.multiplier == 60 or timeframe.multiplier == 240))
     runtime.error("Use a standard 15m, 1H or 4H chart for this first feature.")
@@ -612,7 +659,7 @@ f_row(int row, string title, string value, color c) =>
 if barstate.islast
     table.clear(panel, 0, 0, 1, 22)
     if mode != "Off" and showPanel
-        f_row(0, "4H · PROPOSED · UI 1.0.3", f_state(bias), biasColor)
+        f_row(0, "4H · PROPOSED · UI 1.1.0", f_state(bias), biasColor)
         string alignment = oneBias == bias and (bias == 1 or bias == -1) ? " · aligned" : (oneBias == 1 or oneBias == -1) and (bias == 1 or bias == -1) ? " · opposed" : " · no directional alignment"
         f_row(1, "1H structure · P2 not qualified", supports1H ? f_state(oneBias) + alignment : "View 1H/15m · hidden on 4H", oneBias == 1 ? oneBull : oneBias == -1 ? oneBear : oneNeutral)
         bool threeAligned = (bias == 1 or bias == -1) and oneBias == bias and fifteenBias == bias
@@ -664,4 +711,4 @@ if barstate.islast
         table.cell(setupPanel,0,2,"Remaining gates",text_color=color.white,bgcolor=color.black,text_size=textSize)
         table.cell(setupPanel,1,2,"S/R branch + 15m entry sequence pending",text_color=color.white,bgcolor=color.black,text_size=textSize)
 plot(close, title = "Complete source loaded", display = display.data_window)
-// END OF COMPLETE PIPRUNNER SCRIPT UI 1.0.3
+// END OF COMPLETE PIPRUNNER SCRIPT UI 1.1.0

@@ -1,6 +1,6 @@
 # Project context and handover
 
-Last updated: 29 October 2026.
+Last updated: 5 November 2026.
 
 ## User goal
 
@@ -19,6 +19,10 @@ Build a TradingView hybrid trading indicator/strategy feature by feature. End-of
 - Store durable context in GitHub so future assistants can continue without asking for the entire conversation again.
 
 ## Current implementation status
+
+Current source **UI 1.1.0** (5 November 2026) adds six chart-timeframe EMA overlays: 8 yellow, 20 blue, 36 dotted blue, 50 red, 100 amber (#FFBF00), 200 green. Independent length/color/width/style/visibility plus master switch and shared source; all default visible. They are display-only and never activate optional EMA strategy filtering. Read EMA_OVERLAYS.md. Source reverse-transform check confirms every prior line unchanged apart from version; 27 plot outputs and end marker verified. Platform compilation/visual checks remain pending; do not assume earlier blank-chart investigation was resolved.
+
+Active local checkout is now in C:/Users/rrapo/Documents/ChatGPT/LearnToTrade/Indicators/Piprunner, cloned from existing GitHub branch piprunner/setup because this workspace started empty. This root contains the repository; strategy work remains under piprunner/. Use current repository state rather than old absolute paths from chat. Current deliverables are in this checkout's outputs/ directory (not committed).
 
 Latest delivery **UI 1.0.3** (30 October 2026): user sees blank charts and Style only contains Source diagnostic close. Full local .pine/.txt/Git copies contain 21 plots and object outputs, so incomplete pasted source or stale chart instance is strongly suspected, NOT verified. Moved diagnostic output from header to end so a header-only excerpt cannot masquerade as the full indicator. No structure/zone/SPA calculation changes. Read COMPILE_CHECKS. Next critical step is full-source replacement in a new Pine Editor indicator and checking final marker/current title; if unresolved obtain complete editor source/errors, not more visibility toggling. Exact-revision platform checks remain pending.
 
